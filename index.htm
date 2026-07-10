@@ -19,6 +19,36 @@
             --border-glass: rgba(79, 70, 229, 0.15);
             --text-dark: #1e1b4b;
             --text-muted: #475569;
+            --body-bg: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #e0e7ff 100%);
+            --header-bg: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            --header-text: #ffffff;
+            --header-subtext: #cbd5e1;
+            --card-slide-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: rgba(79, 70, 229, 0.15);
+            --footer-bg: #ffffff;
+            --table-td-border: #cbd5e1;
+        }
+
+        [data-theme="dark"] {
+            --panel-gradient: linear-gradient(135deg, #2563eb 0%, #4338ca 100%);
+            --primary-neon: #6366f1;
+            --secondary-neon: #38bdf8;
+            --accent-pink: #fb7185;
+            --neon-green: #34d399;
+            --card-glass: rgba(30, 41, 59, 0.85);
+            --border-glass: rgba(99, 102, 241, 0.3);
+            --text-dark: #f8fafc;
+            --text-muted: #94a3b8;
+            --body-bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            --header-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --header-text: #ffffff;
+            --header-subtext: #94a3b8;
+            --card-slide-bg: #1e293b;
+            --input-bg: #0f172a;
+            --input-border: rgba(99, 102, 241, 0.3);
+            --footer-bg: #1e293b;
+            --table-td-border: #475569;
         }
 
         * {
@@ -33,17 +63,18 @@
         }
 
         body {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #e0e7ff 100%);
+            background: var(--body-bg);
             color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* HEADER */
         header {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 20px;
@@ -54,21 +85,22 @@
             position: sticky;
             top: 0;
             z-index: 999;
-            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s;
         }
 
         .logo-area h1 {
             font-size: 22px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(to right, var(--primary-neon), var(--secondary-neon), var(--accent-pink));
+            background: linear-gradient(to right, #60a5fa, #818cf8, var(--accent-pink));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .logo-area p {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--header-subtext);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -77,7 +109,7 @@
 
         .header-badges {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
         }
 
@@ -95,11 +127,30 @@
         #live-clock {
             font-size: 12px;
             font-weight: 700;
-            color: var(--primary-neon);
-            background: rgba(79, 70, 229, 0.08);
-            border: 1px solid rgba(79, 70, 229, 0.2);
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.3);
             padding: 6px 12px;
             border-radius: 8px;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* CONTAINER LAYOUT */
@@ -122,6 +173,7 @@
             padding: 24px;
             height: fit-content;
             box-shadow: 0 10px 30px rgba(79, 70, 229, 0.05);
+            transition: background 0.3s, border 0.3s;
         }
 
         .sidebar h3 {
@@ -171,6 +223,7 @@
             padding: 35px;
             box-shadow: 0 20px 40px rgba(79, 70, 229, 0.05);
             position: relative;
+            transition: background 0.3s, border 0.3s;
         }
 
         .app-section {
@@ -189,8 +242,8 @@
 
         /* CARD SLIDE MATERI */
         .slide-card {
-            background: white;
-            border: 1px solid rgba(79, 70, 229, 0.08);
+            background: var(--card-slide-bg);
+            border: 1px solid var(--border-glass);
             border-radius: 16px;
             padding: 30px;
             min-height: 420px;
@@ -199,6 +252,7 @@
             justify-content: space-between;
             margin-bottom: 25px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            transition: background 0.3s, border 0.3s;
         }
 
         .slide-card h2 {
@@ -276,12 +330,21 @@
 
         .btn-secondary {
             background: #e2e8f0;
-            color: var(--text-muted);
+            color: #475569;
+        }
+
+        [data-theme="dark"] .btn-secondary {
+            background: #334155;
+            color: #cbd5e1;
         }
 
         .btn-secondary:hover {
             background: #cbd5e1;
             box-shadow: none;
+        }
+
+        [data-theme="dark"] .btn-secondary:hover {
+            background: #475569;
         }
 
         .btn-popup {
@@ -316,8 +379,8 @@
         input[type="text"], input[type="date"], textarea, select {
             width: 100%;
             padding: 16px;
-            background: white;
-            border: 2px solid var(--border-glass);
+            background: var(--input-bg);
+            border: 2px solid var(--input-border);
             border-radius: 12px;
             font-size: 15px;
             color: var(--text-dark);
@@ -343,7 +406,7 @@
 
         /* CANVAS SIGNATURE STYLES */
         .signature-container {
-            background: white;
+            background: #ffffff;
             border: 2px dashed var(--primary-neon);
             border-radius: 12px;
             position: relative;
@@ -354,10 +417,10 @@
         canvas#signature-pad {
             display: block;
             width: 100%;
-            height: 180px; /* Diperlebar agar nyaman di ponsel */
+            height: 180px; 
             cursor: crosshair;
             background: #ffffff;
-            touch-action: none; /* Mencegah layar bergeser/scrolling saat mencoret-coret */
+            touch-action: none; 
         }
 
         .signature-controls {
@@ -366,6 +429,10 @@
             padding: 8px;
             background: #f8fafc;
             border-top: 1px solid var(--border-glass);
+        }
+
+        [data-theme="dark"] .signature-controls {
+            background: #1e293b;
         }
 
         /* POP-UP MODAL STYLE */
@@ -385,7 +452,7 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--card-slide-bg);
             border: 3px solid var(--primary-neon);
             border-radius: 20px;
             max-width: 850px;
@@ -412,7 +479,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #f1f5f9;
+            border-bottom: 2px solid var(--border-glass);
             padding-bottom: 10px;
         }
 
@@ -434,7 +501,7 @@
             line-height: 1.5;
         }
         .napza-table th, .napza-table td {
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--table-td-border);
             padding: 12px;
             text-align: left;
             vertical-align: top;
@@ -450,32 +517,114 @@
             border-radius: 4px;
             font-size: 10px;
             font-weight: 700;
-            color: var(--primary-neon);
+            color: #4f46e5;
             display: inline-block;
             margin-bottom: 5px;
         }
 
-        /* OUTPUT PORTFOLIO */
+        /* OUTPUT PORTFOLIO DENGAN BINGKAI EMAS & RELIEF UKIRAN SUDUT CSS MURNI */
         #printable-area {
-            background: white;
-            border: 2px solid var(--primary-neon);
-            border-radius: 16px;
-            padding: 30px;
+            background: #ffffff;
+            color: #000000;
+            border: 6px double #d4af37;
+            outline: 2px solid #aa7c11;
+            outline-offset: -16px;
+            border-radius: 2px;
+            padding: 55px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* INDAHNYA RELIEF UKIRAN SUDUT ELEGAN (CSS MURNI MULTI LAYER) */
+        /* Kiri Atas */
+        .decor-tl {
+            position: absolute; top: 24px; left: 24px; width: 40px; height: 40px; pointer-events: none;
+        }
+        .decor-tl::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-top: 4px solid #aa7c11; border-left: 4px solid #aa7c11;
+        }
+        .decor-tl::after {
+            content: ""; position: absolute; top: 8px; left: 8px; width: 20px; height: 20px;
+            border-top: 2px solid #d4af37; border-left: 2px solid #d4af37; box-shadow: -3px -3px 0 #aa7c11;
+        }
+
+        /* Kanan Atas */
+        .decor-tr {
+            position: absolute; top: 24px; right: 24px; width: 40px; height: 40px; pointer-events: none;
+        }
+        .decor-tr::before {
+            content: ""; position: absolute; top: 0; right: 0; width: 100%; height: 100%;
+            border-top: 4px solid #aa7c11; border-right: 4px solid #aa7c11;
+        }
+        .decor-tr::after {
+            content: ""; position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
+            border-top: 2px solid #d4af37; border-right: 2px solid #d4af37; box-shadow: 3px -3px 0 #aa7c11;
+        }
+
+        /* Kiri Bawah */
+        .decor-bl {
+            position: absolute; bottom: 24px; left: 24px; width: 40px; height: 40px; pointer-events: none;
+        }
+        .decor-bl::before {
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            border-bottom: 4px solid #aa7c11; border-left: 4px solid #aa7c11;
+        }
+        .decor-bl::after {
+            content: ""; position: absolute; bottom: 8px; left: 8px; width: 20px; height: 20px;
+            border-bottom: 2px solid #d4af37; border-left: 2px solid #d4af37; box-shadow: -3px 3px 0 #aa7c11;
+        }
+
+        /* Kanan Bawah */
+        .decor-br {
+            position: absolute; bottom: 24px; right: 24px; width: 40px; height: 40px; pointer-events: none;
+        }
+        .decor-br::before {
+            content: ""; position: absolute; bottom: 0; right: 0; width: 100%; height: 100%;
+            border-bottom: 4px solid #aa7c11; border-right: 4px solid #aa7c11;
+        }
+        .decor-br::after {
+            content: ""; position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px;
+            border-bottom: 2px solid #d4af37; border-right: 2px solid #d4af37; box-shadow: 3px 3px 0 #aa7c11;
+        }
+
+        /* KOP DOKUMEN RESMI - GARIS TUMPANG LURUS (TEBAL DI ATAS, TIPIS DI BAWAH) */
+        .official-header {
+            text-align: center;
+            padding-bottom: 18px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .official-header::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 4px;
+            width: 100%;
+            height: 3px;
+            background-color: #aa7c11;
+        }
+        .official-header::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #d4af37;
         }
 
         footer {
             text-align: center;
             padding: 25px;
-            background: white;
+            background: var(--footer-bg);
             color: var(--text-muted);
             font-size: 12px;
             border-top: 1px solid var(--border-glass);
             margin-top: auto;
+            transition: background 0.3s;
         }
 
-        /* =========================================================
-           CSS ENGINE FOR PERFECT PRINT OUT (ANTI OVERLAP & BREAKS)
-           ========================================================= */
         @media print {
             header, .sidebar, footer, .btn, .slide-controls, .no-print-btn-area, h2 {
                 display: none !important;
@@ -521,12 +670,24 @@
             }
 
             #printable-area {
-                border: 2px solid #4f46e5 !important;
-                border-radius: 12px !important;
-                padding: 25px !important;
-                width: 100% !important;
+                border: 6px double #d4af37 !important;
+                outline: 2px solid #aa7c11 !important;
+                outline-offset: -16px !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 50px !important;
                 box-sizing: border-box !important;
                 page-break-inside: avoid !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+
+            .decor-tl::before, .decor-tl::after,
+            .decor-tr::before, .decor-tr::after,
+            .decor-bl::before, .decor-bl::after,
+            .decor-br::before, .decor-br::after {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
             }
         }
 
@@ -535,13 +696,34 @@
                 grid-template-columns: 1fr;
                 gap: 15px;
                 margin: 10px auto;
+                padding-bottom: 80px; /* Ruang agar konten bawah tidak tertutup nav bar melayang */
             }
 
+            /* UPGRADE FITUR NAVIGASI MOBILE: Fixed Bottom Navigation Bar */
             .sidebar {
                 display: flex;
                 overflow-x: auto;
-                padding: 10px;
+                padding: 10px 15px;
                 gap: 8px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--card-glass);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 20px 20px 0 0;
+                border-top: 2px solid var(--primary-neon);
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
+            }
+
+            .sidebar::-webkit-scrollbar {
+                display: none; /* Sembunyikan scrollbar di Chrome/Safari */
             }
 
             .sidebar h3 {
@@ -551,8 +733,12 @@
             .nav-btn {
                 white-space: nowrap;
                 margin-bottom: 0;
-                padding: 10px 16px;
+                padding: 12px 16px;
                 font-size: 13px;
+                flex: 1;
+                justify-content: center;
+                min-width: fit-content;
+                border-radius: 10px;
             }
 
             .content-panel {
@@ -582,9 +768,12 @@
     <header>
         <div class="logo-area">
             <h1>SMANDACIS PORTAL DIGITAL</h1>
-            <p>P4GN (Pencegahan, Pemberantasan, Penyalahgunaan, dan Peredaran Gelap Narkotika)  </p>
+            <p>P4GN (Pencegahan, Pemberantasan, Penyalahgunaan, dan Peredaran Gelap Narkotika)</p>
         </div>
         <div class="header-badges">
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-toggle">
+                🌙 Mode Malam
+            </button>
             <span class="badge-mpls">MPLS Ramah 2026</span>
             <span id="live-clock"></span>
         </div>
@@ -612,8 +801,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="student-gugus">Kelas / Kelompok MPLS</label>
-                    <input type="text" id="student-gugus" placeholder="Contoh: X-1 / kelompok">
+                    <label for="student-kelompok">Kelas / Kelompok MPLS</label>
+                    <input type="text" id="student-kelompok" placeholder="Contoh: X-1 / kelompok">
                 </div>
 
                 <div style="margin-top: 35px;">
@@ -624,7 +813,7 @@
             <div id="section-materi" class="app-section">
                 <div class="slide-container">
                     <div class="slide-card" id="current-slide-content">
-                        </div>
+                    </div>
                     <div class="slide-controls">
                         <button class="btn btn-secondary" onclick="changeSlide(-1)">&larr; Back</button>
                         <span id="slide-indicator" style="font-weight: 700; color: var(--text-muted); font-size: 13px;">Slide 1 / 6</span>
@@ -641,7 +830,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>1. Analisis secara kritis dampak terburuk bagi masa depan akademis dan fisik tokoh tersebut jika menerima tawaran!</label>
+                    <label>1. Analisis secara kritis dampak terburuk bagi masa depan akademis and fisik tokoh tersebut jika menerima tawaran!</label>
                     <textarea id="ans-case-1" rows="3" placeholder="Gunakan pemahamanmu dari slide sebelumnya mengenai kerusakan organ tubuh & sanksi sekolah..."></textarea>
                 </div>
 
@@ -669,9 +858,9 @@
 
                 <div class="form-group">
                     <label>📝 Ikrar Komitmen Karakter Murid</label>
-                    <div style="background: white; padding: 25px; border-radius: 14px; border: 2px solid var(--border-glass); line-height: 2.3; font-size: 15px; color: var(--text-dark);">
+                    <div style="background: var(--input-bg); padding: 25px; border-radius: 14px; border: 2px solid var(--border-glass); line-height: 2.3; font-size: 15px; color: var(--text-dark);">
                         Saya berkomitmen mutlak melindungi mimpi dan masa depan saya dari jerat narkoba dengan aktif bergabung pada ekstrakurikuler 
-                        <select id="ans-ekskul" style="width: auto; display: inline-block; padding: 6px; background: #fff; color: var(--text-dark); border-color: var(--primary-neon); border-radius:6px;">
+                        <select id="ans-ekskul" style="width: auto; display: inline-block; padding: 6px; background: var(--input-bg); color: var(--text-dark); border-color: var(--primary-neon); border-radius:6px;">
                             <option value="">[Pilih Wadah Kreativitas]</option>
                             <option value="Prestasi Akademik">Prestasi Akademik</option>
                             <option value="OSIS / MPK">OSIS / MPK</option>
@@ -709,15 +898,21 @@
                 <h2 style="font-size: 22px; margin-bottom: 15px;">Laporan Pencapaian Kompetensi Mandiri</h2>
                 
                 <div id="printable-area">
-                    <div style="text-align: center; border-bottom: 2px dashed var(--border-glass); padding-bottom: 20px; margin-bottom: 20px;">
-                        <h3 style="color: var(--primary-neon); font-size: 20px;">PORTOFOLIO AKHIR P4GN - SMANDACIS</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Masa Pengenalan Lingkungan Sekolah 2026</p>
+                    <div class="decor-tl"></div>
+                    <div class="decor-tr"></div>
+                    <div class="decor-bl"></div>
+                    <div class="decor-br"></div>
+
+                    <div class="official-header">
+                        <h3 style="color: #000000; font-size: 22px; font-weight: 800; letter-spacing: 0.5px;">PORTOFOLIO AKHIR P4GN - SMANDACIS</h3>
+                        <p style="font-size: 12px; color: #000000; font-weight: bold; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Masa Pengenalan Lingkungan Sekolah 2026</p>
                     </div>
-                    <table style="width:100%; font-size:14px; color:var(--text-dark); margin-bottom: 20px;">
-                        <tr><td style="width:30%; padding:4px 0;"><strong>Nama Murid</strong></td><td id="rev-name">: -</td></tr>
-                        <tr><td style="padding:4px 0;"><strong>Kelas/Gugus</strong></td><td id="rev-gugus">: -</td></tr>
+
+                    <table style="width:100%; font-size:14px; color:#000000; margin-bottom: 20px;">
+                        <tr><td style="width:30%; padding:6px 0;"><strong>Nama Murid</strong></td><td id="rev-name" style="font-weight: bold;">: -</td></tr>
+                        <tr><td style="padding:6px 0;"><strong>Kelas/Kelompok</strong></td><td id="rev-kelompok" style="font-weight: bold;">: -</td></tr>
                     </table>
-                    <div id="rev-out-1" style="font-size: 14px; line-height: 1.6; color:var(--text-dark);">-</div>
+                    <div id="rev-out-1" style="font-size: 14px; line-height: 1.7; color:#000000;">-</div>
                 </div>
 
                 <div style="margin-top: 30px; display: flex; gap: 12px;" class="no-print-btn-area">
@@ -736,7 +931,7 @@
                 <button class="modal-close" onclick="closePopup()">&times;</button>
             </div>
             <div id="modal-body" style="font-size: 14px; line-height: 1.7; color: var(--text-dark);">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -810,7 +1005,7 @@
                     </tr>
                 </table>
                 <br>
-                <strong>Catatan Penting bagi Pelajar:</strong> Penyalahgunaan zat-zat di atas tanpa resep dokter resmi/secara ilegal diancam pidana kurungan minimal 4 tahun, denda miliaran rupiah, dan penyitaan aset.`
+                <strong>Catatan Penting bagi Pelajar:</strong> Penyalahgunaan zat-zat di atas tanpa resep dokter resmi/secara ilegal diancam pidana kurungan minimal 4 tahun, denda miliaran rupiah, and penyitaan aset.`
             },
             {
                 title: "03. Sistem Saraf Pusat di Bawah Ancaman",
@@ -841,7 +1036,7 @@
                 content: "Menolak ajakan negatif adalah sebuah skill kepemimpinan yang keren. Terapkan sikap asertif: tatap matanya, katakan penolakan secara mantap dengan intonasi percaya diri, lalu langsung alihkan ke topik positif lain.",
                 imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=500&q=80",
                 meta: "Life Skill: Berani menolak ajakan negatif adalah bukti karakter unggul.",
-                popupTitle: "🛡️TipS Jitu Kata-Kata Asertif yang bisa Kamu Contoh",
+                popupTitle: "🛡️TIPS Jitu Kata-Kata Asertif yang bisa Kamu Contoh",
                 popupContent: `Jangan bingung atau takut dicap "cupu" di dalam pergaulan. Berikut pilihan kalimat penolakan taktis yang siap pakai sesuai situasi:<br><br>
                 • <strong>Mode Santai:</strong> "Moal bro, hatur nuhun. Target urang fisik kudu fit terus kusabab minggu hareup aya turnamen/seleksi ekskul."<br>
                 • <strong>Mode Alasan Keluarga:</strong> "Sorry banget, di rumah sering ada sidak urine dadakan dari bokap. Cari aman aja gue mah."<br>
@@ -857,39 +1052,42 @@
                 popupTitle: "🤝 Kolaborasi Total SMAN 2 Ciamis",
                 popupContent: `Upaya pencegahan ini melibatkan sinergi total seluruh ekosistem:<br><br>
                 • <strong>Guru BK (Bimbingan Konseling):</strong> Pionir ruang aman konsultasi. Kerahasiaan cerita dijamin 100% tanpa sanksi jika murid berinisiatif mencari solusi medis.<br>
-                • <strong>Warga Sekolah:</strong> Rekan sebaya, wali kelas, keamanan, dan pengelola kantin bersama-sama menutup ruang gerak organisasi terlarang.`
+                • <strong>Warga Sekolah:</strong> Rekan sebaya, wali kelas, keamanan, and pengelola kantin bersama-sama menutup ruang gerak organisasi terlarang.`
             }
         ];
 
         let currentSlide = 0;
-
-        // SIGNATURE ENGINE VARIABLES & LOGIC
         let canvas, ctx;
         let isDrawing = false;
 
         window.onload = function() {
-            // Set Default Tanggal ke Hari Ini
+            updateClock();
+            setInterval(updateClock, 1000);
+
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('ans-date').value = today;
 
-            // Inisialisasi awal Canvas Signature Pad
             initSignaturePad();
         };
+
+        window.addEventListener('resize', () => {
+            if(document.getElementById('section-lks-b').classList.contains('active')) {
+                resizeCanvas();
+            }
+        });
+
+        function updateClock() {
+            const d = new Date();
+            document.getElementById('live-clock').innerText = d.toLocaleTimeString('id-ID') + ' WIB';
+        }
 
         function initSignaturePad() {
             canvas = document.getElementById('signature-pad');
             ctx = canvas.getContext('2d');
             
-            // Set dimensi internal canvas sesuai ukuran aslinya di layar
             resizeCanvas();
+            resetCanvasStyle();
 
-            // Pengaturan Tinta Utama
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#1e1b4b'; // Warna tinta gelap elegan
-
-            // MOUSE EVENTS
             canvas.addEventListener('mousedown', (e) => {
                 isDrawing = true;
                 const pos = getMousePos(canvas, e);
@@ -905,13 +1103,12 @@
             canvas.addEventListener('mouseup', () => isDrawing = false);
             canvas.addEventListener('mouseleave', () => isDrawing = false);
 
-            // TOUCH EVENTS (Untuk HP / Tablet Layar Sentuh)
             canvas.addEventListener('touchstart', (e) => {
                 isDrawing = true;
                 const pos = getTouchPos(canvas, e);
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
-                e.preventDefault(); // Mencegah scrolling browser
+                e.preventDefault(); 
             }, { passive: false });
 
             canvas.addEventListener('touchmove', (e) => {
@@ -925,7 +1122,6 @@
             canvas.addEventListener('touchend', () => isDrawing = false);
         }
 
-        // Kalkulasi posisi mouse yang akurat terhadap canvas bounding client
         function getMousePos(canvasDom, mouseEvent) {
             const rect = canvasDom.getBoundingClientRect();
             return {
@@ -934,7 +1130,6 @@
             };
         }
 
-        // Kalkulasi posisi sentuhan jari yang akurat (Menghitung faktor scroll layar)
         function getTouchPos(canvasDom, touchEvent) {
             const rect = canvasDom.getBoundingClientRect();
             return {
@@ -944,18 +1139,51 @@
         }
 
         function resizeCanvas() {
-            // Memberikan resolusi gambar internal yang jernih
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
+            if (!canvas) return;
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            
+            let tempImage = null;
+            try {
+                if (canvas.width > 0 && canvas.height > 0) {
+                    tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                }
+            } catch(e) {}
+
+            canvas.width = width;
+            canvas.height = height;
+            
+            resetCanvasStyle();
+
+            if (tempImage) {
+                try { ctx.putImageData(tempImage, 0, 0); } catch(e) {}
+            }
+        }
+
+        function resetCanvasStyle() {
+            if (!ctx) return;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#000000'; 
         }
 
         function clearSignature() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Reset parameter style tinta setelah dibersihkan
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#1e1b4b';
+            resetCanvasStyle();
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const toggleBtn = document.getElementById('theme-toggle');
+            
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                toggleBtn.innerHTML = '🌙 Mode Malam';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggleBtn.innerHTML = '☀️ Mode Terang';
+            }
         }
 
         function switchSection(sectionId) {
@@ -971,15 +1199,10 @@
 
             if(sectionId === 'materi') renderSlide();
             
-            // Re-inisialisasi ulang dimensi canvas jika murid membuka tab LKS-B
             if(sectionId === 'lks-b') {
                 setTimeout(() => {
                     resizeCanvas();
-                    ctx.lineWidth = 3;
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    ctx.strokeStyle = '#1e1b4b';
-                }, 150);
+                }, 100);
             }
         }
 
@@ -1025,18 +1248,20 @@
 
         function saveIdentity() {
             const name = document.getElementById('student-name').value.trim();
-            const gugus = document.getElementById('student-gugus').value.trim();
-            if(!name || !gugus) {
-                alert('Eits sabar dulu dong! Harap tulis Nama Lengkap dan Kelas/Gugus MPLS-mu secara manual dulu ya!');
+            const kelompok = document.getElementById('student-kelompok').value.trim();
+            if(!name || !kelompok) {
+                alert('Eits sabar dulu dong! Harap tulis Nama Lengkap dan Kelas/Kelompok MPLS-mu secara manual dulu ya!');
                 return;
             }
             switchSection('materi');
         }
 
         function compileReview() {
-            const studentName = document.getElementById('student-name').value || "-";
+            const studentName = document.getElementById('student-name').value.trim() || "-";
+            const studentKelompok = document.getElementById('student-kelompok').value.trim() || "-";
+            
             document.getElementById('rev-name').innerText = `: ${studentName}`;
-            document.getElementById('rev-gugus').innerText = `: ${document.getElementById('student-gugus').value || "-"}`;
+            document.getElementById('rev-kelompok').innerText = `: ${studentKelompok}`;
             
             const q1 = document.getElementById('ans-case-1').value || "Belum diisi.";
             const q2 = document.getElementById('ans-case-2').value || "Belum diisi.";
@@ -1045,7 +1270,6 @@
             const ekskul = document.getElementById('ans-ekskul').value || "[Belum dipilih]";
             const support = document.getElementById('ans-support').value || "[Belum ditentukan]";
             
-            // Format Tanggal Input Komitmen
             const inputDateVal = document.getElementById('ans-date').value;
             let formattedDate = "-";
             if (inputDateVal) {
@@ -1053,42 +1277,65 @@
                 formattedDate = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             }
 
-            // Ekstrak hasil tanda tangan ke format Gambar Data URL
             const signatureDataURL = canvas.toDataURL();
 
             document.getElementById('rev-out-1').innerHTML = `
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px;">
-                    <strong style="color:var(--primary-neon);">[1] Hasil Analisis Penalaran Kritis Murid:</strong><br>${q1}
+                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
+                    <strong style="color:#000000;">[1] Hasil Analisis Penalaran Kritis Murid:</strong><br>${q1}
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px;">
-                    <strong style="color:var(--primary-neon);">[2] Kalimat Sikap Asertif/Penolakan Keren:</strong><br>"${q2}"
+                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
+                    <strong style="color:#000000;">[2] Kalimat Sikap Asertif/Penolakan Keren:</strong><br>${q2}
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px;">
-                    <strong style="color:var(--primary-neon);">[3] Target & Resolusi 1 Tahun ke Depan:</strong><br>${goals}
+                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
+                    <strong style="color:#000000;">[3] Target & Resolusi 1 Tahun ke Depan:</strong><br>${goals}
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px;">
-                    <strong style="color:var(--primary-neon);">[4] Lingkaran Support System Positif:</strong><br>${circle}
+                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
+                    <strong style="color:#000000;">[4] Lingkaran Support System Positif:</strong><br>${circle}
                 </div>
-                <div style="background:rgba(16,185,129,0.08); padding:15px; border-left:4px solid var(--neon-green); border-radius:4px; color: #115e59; margin-bottom: 25px;">
-                    <strong>Deklarasi Juara:</strong> Saya berkomitmen penuh mengembangkan potensi diri lewat ekskul <u>${ekskul}</u> dan siap terbuka mengomunikasikan masalah saya kepada <u>${support}</u> dengan pemanfaatan BK sebagai pionir bersama seluruh warga SMAN 2 Ciamis demi masa depan gemilang tanpa narkoba!
+                <div style="background:rgba(0,0,0,0.03); padding:15px; border-left:4px solid #aa7c11; border-radius:4px; color:#000000; margin-bottom: 25px; line-height:1.6;">
+                    <strong>Deklarasi Juara:</strong> Saya berkomitmen penuh mengembangkan potensi diri lewat ekskul <strong>${ekskul}</strong> dan siap terbuka mengomunikasikan masalah saya kepada <strong>${support}</strong> dengan pemanfaatan BK sebagai pionir bersama seluruh warga SMAN 2 Ciamis demi masa depan gemilang tanpa narkoba!
                 </div>
                 
-                <!-- LAYOUT PRINT TANDA TANGAN -->
-                <div style="display: flex; justify-content: flex-end; text-align: center; margin-top: 30px;">
+                <div style="display: flex; justify-content: flex-end; text-align: center; margin-top: 30px; color:#000000;">
                     <div style="width: 240px;">
                         <p style="font-size: 13px; margin-bottom: 5px;">Ciamis, ${formattedDate}</p>
-                        <p style="font-size: 13px; font-weight: bold; color: var(--text-muted);">Siswa yang berkomitmen,</p>
-                        <div style="height: 95px; border-bottom: 1px solid #94a3b8; margin: 5px 0; display: flex; align-items: center; justify-content: center;">
+                        <p style="font-size: 13px; font-weight: bold; color:#000000;">Murid yang berkomitmen,</p>
+                        <div style="height: 95px; border-bottom: 1px solid #000000; margin: 5px 0; display: flex; align-items: center; justify-content: center;">
                             <img src="${signatureDataURL}" alt="Tanda Tangan" style="max-height: 90px; max-width: 100%;">
                         </div>
-                        <p style="font-size: 14px; font-weight: bold; margin-top: 5px;">${studentName}</p>
+                        <p style="font-size: 14px; font-weight: bold; margin-top: 5px; color:#000000;">${studentName}</p>
                     </div>
                 </div>
             `;
             switchSection('review');
         }
 
+        function checkModuleCompletion() {
+            const name = document.getElementById('student-name').value.trim();
+            const kelompok = document.getElementById('student-kelompok').value.trim();
+            const q1 = document.getElementById('ans-case-1').value.trim();
+            const q2 = document.getElementById('ans-case-2').value.trim();
+            const goals = document.getElementById('ans-goals').value.trim();
+            const circle = document.getElementById('ans-circle').value.trim();
+            const ekskul = document.getElementById('ans-ekskul').value;
+            const support = document.getElementById('ans-support').value.trim();
+
+            if (!name || name === "-" || 
+                !kelompok || kelompok === "-" || 
+                !q1 || !q2 || !goals || !circle || 
+                !ekskul || !support) {
+                return false;
+            }
+            return true;
+        }
+
         function triggerPrint() {
+            if (!checkModuleCompletion()) {
+                // MODIFIKASI: Mengubah pesan alert sesuai instruksi
+                alert("Akses Terkunci. Silakan kerjakan LK Analisis & LK Komitmen terlebih dahulu");
+                return;
+            }
+
             const studentName = document.getElementById('student-name').value.trim();
             const originalTitle = document.title;
             
@@ -1104,11 +1351,6 @@
                 document.title = originalTitle;
             }, 1000);
         }
-
-        setInterval(() => {
-            const d = new Date();
-            document.getElementById('live-clock').innerText = d.toLocaleTimeString('id-ID') + ' WIB';
-        }, 1000);
     </script>
 </body>
 </html>
