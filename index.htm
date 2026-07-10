@@ -694,21 +694,21 @@
         @media (max-width: 850px) {
             .main-container {
                 grid-template-columns: 1fr;
-                gap: 15px;
-                margin: 10px auto;
-                padding-bottom: 80px; /* Ruang agar konten bawah tidak tertutup nav bar melayang */
+                gap: 20px;
+                margin: 15px auto;
+                padding-bottom: 100px; /* Ditambah sedikit agar konten utama tidak tertutup menu navigasi bawah */
             }
-
-            /* UPGRADE FITUR NAVIGASI MOBILE: Fixed Bottom Navigation Bar */
             .sidebar {
-                display: flex;
-                overflow-x: auto;
-                padding: 10px 15px;
-                gap: 8px;
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-evenly; /* Distribusi ruang yang fleksibel dan seimbang */
+                gap: 4px; /* Jarak antar tombol yang proporsional */
+                padding: 10px 8px; /* Padding wadah luar yang pas untuk portrait */
                 background: var(--card-glass);
                 backdrop-filter: blur(20px);
                 -webkit-backdrop-filter: blur(20px);
@@ -721,40 +721,35 @@
                 z-index: 1000;
                 scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
             }
-
             .sidebar::-webkit-scrollbar {
                 display: none; /* Sembunyikan scrollbar di Chrome/Safari */
             }
-
             .sidebar h3 {
                 display: none;
             }
-
             .nav-btn {
-                white-space: nowrap;
+                white-space: normal; /* Mengizinkan teks membungkus (wrap) ke bawah jika ruang layar sangat sempit */
                 margin-bottom: 0;
-                padding: 12px 16px;
-                font-size: 13px;
-                flex: 1;
+                padding: 8px 4px; /* Padding yang lebih proporsional untuk HP portrait */
+                font-size: 11px; /* Ukuran font dioptimalkan agar pas di layar kecil */
+                flex: 1; /* Distribusi ruang yang fleksibel bagi semua tombol */
+                min-width: 0; /* Mencegah elemen meluap keluar dari grid flex */
                 justify-content: center;
-                min-width: fit-content;
+                text-align: center; /* Memastikan teks tombol berada di tengah */
                 border-radius: 10px;
+                line-height: 1.2; /* Jarak antar baris teks tombol lebih rapat dan rapi */
             }
-
             .content-panel {
                 padding: 20px;
             }
-
             .slide-layout-split {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-
             .slide-image-box {
                 height: 180px;
                 order: -1;
             }
-
             header {
                 flex-direction: column;
                 gap: 12px;
@@ -1063,18 +1058,21 @@
         window.onload = function() {
             updateClock();
             setInterval(updateClock, 1000);
-
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('ans-date').value = today;
-
             initSignaturePad();
-        };
 
-        window.addEventListener('resize', () => {
-            if(document.getElementById('section-lks-b').classList.contains('active')) {
-                resizeCanvas();
-            }
-        });
+            // OTOMATISASI EDIT PROFIL LANGSUNG BERUBAH PADA PORTOFOLIO
+            document.getElementById('student-name').addEventListener('input', function() {
+                const nameVal = this.value.trim();
+                document.getElementById('rev-name').innerText = ": " + (nameVal || "-");
+            });
+
+            document.getElementById('student-kelompok').addEventListener('input', function() {
+                const groupVal = this.value.trim();
+                document.getElementById('rev-kelompok').innerText = ": " + (groupVal || "-");
+            });
+        };
 
         function updateClock() {
             const d = new Date();
@@ -1257,53 +1255,67 @@
         }
 
         function compileReview() {
-            const studentName = document.getElementById('student-name').value.trim() || "-";
-            const studentKelompok = document.getElementById('student-kelompok').value.trim() || "-";
-            
-            document.getElementById('rev-name').innerText = `: ${studentName}`;
-            document.getElementById('rev-kelompok').innerText = `: ${studentKelompok}`;
-            
-            const q1 = document.getElementById('ans-case-1').value || "Belum diisi.";
-            const q2 = document.getElementById('ans-case-2').value || "Belum diisi.";
-            const goals = document.getElementById('ans-goals').value || "Belum diisi.";
-            const circle = document.getElementById('ans-circle').value || "Belum diisi.";
-            const ekskul = document.getElementById('ans-ekskul').value || "[Belum dipilih]";
-            const support = document.getElementById('ans-support').value || "[Belum ditentukan]";
-            
-            const inputDateVal = document.getElementById('ans-date').value;
-            let formattedDate = "-";
-            if (inputDateVal) {
-                const dateObj = new Date(inputDateVal);
-                formattedDate = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            if (!checkModuleCompletion()) {
+                alert("Akses Terkunci. Silakan kerjakan LK Analisis & LK Komitmen terlebih dahulu");
+                return;
+            }
+
+            const studentName = document.getElementById('student-name').value.trim();
+            const kelompok = document.getElementById('student-kelompok').value.trim();
+            const q1 = document.getElementById('ans-case-1').value.trim();
+            const q2 = document.getElementById('ans-case-2').value.trim();
+            const goals = document.getElementById('ans-goals').value.trim();
+            const circle = document.getElementById('ans-circle').value.trim();
+            const ekskul = document.getElementById('ans-ekskul').value;
+            const support = document.getElementById('ans-support').value.trim();
+            const inputDate = document.getElementById('ans-date').value;
+
+            document.getElementById('rev-name').innerText = ": " + studentName;
+            document.getElementById('rev-kelompok').innerText = ": " + kelompok;
+
+            let formattedDate = "";
+            if(inputDate) {
+                const d = new Date(inputDate);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                formattedDate = d.toLocaleDateString('id-ID', options);
+            } else {
+                formattedDate = "-";
             }
 
             const signatureDataURL = canvas.toDataURL();
 
             document.getElementById('rev-out-1').innerHTML = `
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
-                    <strong style="color:#000000;">[1] Hasil Analisis Penalaran Kritis Murid:</strong><br>${q1}
+                <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 15px;">
+                    <h4 style="font-size: 15px; margin-bottom: 5px; color:#1e1b4b;">A. Hasil Analisis Kritis Kasus Remaja</h4>
+                    <p style="font-size:13px; text-align:justify; color:#334155;"><strong>Dampak Masa Depan:</strong> ${q1}</p>
+                    <p style="font-size:13px; margin-top:5px; color:#334155;"><strong>Respon Penolakan Asertif:</strong> "<em>${q2}</em>"</p>
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
-                    <strong style="color:#000000;">[2] Kalimat Sikap Asertif/Penolakan Keren:</strong><br>${q2}
+
+                <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 15px;">
+                    <h4 style="font-size: 15px; margin-bottom: 5px; color:#1e1b4b;">B. Rencana Aksi Strategis</h4>
+                    <p style="font-size:13px; color:#334155;"><strong>Target Prestasi (1 Tahun):</strong> ${goals}</p>
+                    <p style="font-size:13px; color:#334155;"><strong>Lingkaran Pelindung (Support System):</strong> ${circle}</p>
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
-                    <strong style="color:#000000;">[3] Target & Resolusi 1 Tahun ke Depan:</strong><br>${goals}
+
+                <div style="margin-top: 15px;">
+                    <h4 style="font-size: 15px; margin-bottom: 5px; color:#1e1b4b;">C. Pernyataan Deklarasi & Ikrar Murid</h4>
+                    <p style="font-size:13px; line-height: 1.6; text-align:justify; color:#334155;">
+                        Saya berkomitmen penuh mengembangkan potensi diri lewat ekskul <u>${ekskul}</u> dan siap terbuka mengomunikasikan masalah saya kepada <u>${support}</u> dengan pemanfaatan BK sebagai pionir bersama seluruh warga SMAN 2 Ciamis demi masa depan gemilang tanpa narkoba!
+                    </p>
                 </div>
-                <div style="margin-bottom:15px; background:rgba(0,0,0,0.02); padding:15px; border-radius:10px; color:#000000;">
-                    <strong style="color:#000000;">[4] Lingkaran Support System Positif:</strong><br>${circle}
-                </div>
-                <div style="background:rgba(0,0,0,0.03); padding:15px; border-left:4px solid #aa7c11; border-radius:4px; color:#000000; margin-bottom: 25px; line-height:1.6;">
-                    <strong>Deklarasi Juara:</strong> Saya berkomitmen penuh mengembangkan potensi diri lewat ekskul <strong>${ekskul}</strong> dan siap terbuka mengomunikasikan masalah saya kepada <strong>${support}</strong> dengan pemanfaatan BK sebagai pionir bersama seluruh warga SMAN 2 Ciamis demi masa depan gemilang tanpa narkoba!
-                </div>
-                
-                <div style="display: flex; justify-content: flex-end; text-align: center; margin-top: 30px; color:#000000;">
-                    <div style="width: 240px;">
-                        <p style="font-size: 13px; margin-bottom: 5px;">Ciamis, ${formattedDate}</p>
-                        <p style="font-size: 13px; font-weight: bold; color:#000000;">Murid yang berkomitmen,</p>
-                        <div style="height: 95px; border-bottom: 1px solid #000000; margin: 5px 0; display: flex; align-items: center; justify-content: center;">
+
+                <div style="margin-top: 30px; display: flex; justify-content: flex-end;">
+                    <div style="text-align: center; width: 220px;">
+                        <p style="font-size: 13px; color:#000000;">Ciamis, ${formattedDate}</p>
+                        <p style="font-size: 13px; font-weight: bold; color: var(--text-muted); margin-bottom: 15px;">Siswa yang berkomitmen,</p>
+                        
+                        <div style="height: 95px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
                             <img src="${signatureDataURL}" alt="Tanda Tangan" style="max-height: 90px; max-width: 100%;">
                         </div>
-                        <p style="font-size: 14px; font-weight: bold; margin-top: 5px; color:#000000;">${studentName}</p>
+
+                        <p style="font-size: 14px; font-weight: bold; color:#000000; margin-bottom: 5px;">${studentName}</p>
+                        
+                        <hr style="border: none; border-top: 1px solid #000000; margin: 5px 0 0 0;">
                     </div>
                 </div>
             `;
