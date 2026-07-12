@@ -2446,12 +2446,17 @@
         }
 
         function triggerPrint() {
+            // 1. Lewati validasi secara aman
             if (!checkModuleCompletion()) {
                 alert("Akses Terkunci. Silakan kerjakan LK Analisis & LK Komitmen terlebih dahulu");
                 return;
             }
 
-            const runPrint = () => {
+            // 2. Wajib rakit dan paksa kompilasi review portofolio terlebih dahulu
+            compileReview();
+
+            // 3. Eksekusi pencetakan setelah memberi jeda bagi browser untuk merender bingkai emas portofolio
+            setTimeout(() => {
                 const studentName = document.getElementById('student-name').value.trim();
                 const originalTitle = document.title;
                 
@@ -2461,23 +2466,14 @@
                     document.title = "Portofolio_P4GN_Murid_SMANDACIS";
                 }
                 
+                // Panggil jendela simpan PDF/Cetak bawaan browser
                 window.print();
                 
+                // Kembalikan judul tab asal
                 setTimeout(() => {
                     document.title = originalTitle;
                 }, 1000);
-            };
-
-            if (!reviewCompiled) {
-                compileReview();
-                if (!reviewCompiled) {
-                    return;
-                }
-                setTimeout(runPrint, 200);
-                return;
-            }
-
-            runPrint();
+            }, 350); // Jeda aman 350 milidetik untuk memastikan HTML portofolio dirender sempurna
         }
     </script>
 </body>
