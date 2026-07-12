@@ -964,6 +964,10 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
         }
 
+        .portfolio-print-root {
+            display: none;
+        }
+
         @media print {
             /* 1. Sembunyikan TOTAL seluruh elemen input, header, sidebar, dan tombol agar tidak ikut tercetak */
             header, 
@@ -1019,8 +1023,15 @@
                 margin: 0 !important;
             }
 
-            /* 4. ATUR BINGKAI EMAS AGAR PAS DAN TIDAK TERPOTONG */
-            #printable-area {
+            .portfolio-print-root {
+                display: block !important;
+                visibility: visible !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .portfolio-print-root .printable-portfolio-card {
                 display: block !important;
                 visibility: visible !important;
                 border: 6px double #d4af37 !important;
@@ -1617,6 +1628,8 @@
     </div>
 
 
+
+    <div id="portfolio-print-root" class="portfolio-print-root" aria-hidden="true"></div>
 
     <footer>
         <p>MPI MPLS SMAN 2 Ciamis - Selaras Kurikulum Nasional Bebas Perpeloncoan &copy; 2026</p>
@@ -2343,7 +2356,7 @@
 
             const signatureDataURL = canvas.toDataURL();
 
-            document.getElementById('rev-out-1').innerHTML = `
+            const reviewBodyContent = `
                 <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 15px;">
                     <h4 style="font-size: 15px; margin-bottom: 5px; color:#1e1b4b;">A. Hasil Analisis Kritis Kasus Remaja</h4>
                     <p style="font-size:13px; text-align:justify; color:#334155;"><strong>Dampak Masa Depan:</strong> ${q1}</p>
@@ -2378,6 +2391,32 @@
                     </div>
                 </div>
             `;
+
+            document.getElementById('rev-out-1').innerHTML = reviewBodyContent;
+
+            const printRoot = document.getElementById('portfolio-print-root');
+            if (printRoot) {
+                printRoot.innerHTML = `
+                    <div class="printable-portfolio-card" style="position: relative;">
+                        <div class="decor-tl"></div>
+                        <div class="decor-tr"></div>
+                        <div class="decor-bl"></div>
+                        <div class="decor-br"></div>
+
+                        <div class="official-header">
+                            <h3 style="color: #000000; font-size: 22px; font-weight: 800; letter-spacing: 0.5px;">PORTOFOLIO AKHIR P4GN - SMANDACIS</h3>
+                            <p style="font-size: 12px; color: #000000; font-weight: bold; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #000000; padding-bottom: 6px;">Masa Pengenalan Lingkungan Sekolah 2026</p>
+                        </div>
+
+                        <table style="width:100%; font-size:14px; color:#000000; margin-bottom: 20px;">
+                            <tr><td style="width:30%; padding:6px 0;"><strong>Nama Murid</strong></td><td style="font-weight: bold;">: ${studentName || '-'}</td></tr>
+                            <tr><td style="padding:6px 0;"><strong>Jenis Kelamin</strong></td><td style="font-weight: bold;">: ${gender || '-'}</td></tr>
+                            <tr><td style="padding:6px 0;"><strong>Kelas/Kelompok</strong></td><td style="font-weight: bold;">: ${kelompok || '-'}</td></tr>
+                        </table>
+                        <div style="font-size: 14px; line-height: 1.7; color:#000000;">${reviewBodyContent}</div>
+                    </div>
+                `;
+            }
             
             // ==========================================
             // OTOMATISASI PENGIRIMAN DATABASE KE GOOGLE SHEET
@@ -2479,7 +2518,7 @@
                 setTimeout(() => {
                     document.title = originalTitle;
                 }, 1000);
-            }, 350); // Jeda aman 350 milidetik untuk memastikan HTML portofolio dirender sempurna
+            }, 450); // Jeda aman 450 milidetik agar portofolio siap tampil di preview PDF
         }
     </script>
 </body>
