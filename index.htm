@@ -69,7 +69,7 @@
         body {
             background: var(--body-bg);
             color: var(--text-dark);
-            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
@@ -1010,7 +1010,7 @@
                     print-color-adjust: exact !important;
                 }
             }
-        @media (max-width: 850px) {
+        @media (max-width: 850px), (pointer: coarse) and (max-width: 980px) {
             .main-container {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -1105,7 +1105,7 @@
             }
         }
 
-        @media (max-width: 640px) and (orientation: portrait) {
+        @media (max-width: 640px), (pointer: coarse) {
             header {
                 padding: 12px 14px;
                 border-radius: 0 0 16px 16px;
@@ -1729,7 +1729,12 @@
         // Tracker untuk Time Spent / Screentime
         let startTime = Date.now();
 
+        function updateVh() {
+            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+
         window.onload = function() {
+            updateVh();
             initScreentimeTracker();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('ans-date').value = today;
@@ -1742,7 +1747,21 @@
             loadStudentData(true);
         };
 
-        window.addEventListener('resize', syncMobileNavState);
+        window.addEventListener('resize', () => {
+            updateVh();
+            syncMobileNavState();
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(updateVh, 120);
+        });
+
+        window.addEventListener('focusin', (event) => {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
+                setTimeout(updateVh, 120);
+            }
+        });
+
         window.addEventListener('scroll', () => {
             updateHeaderState();
         });
@@ -1753,11 +1772,20 @@
             header.classList.toggle('scrolled', window.scrollY > 8);
         }
 
+        function isTouchDevice() {
+            return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+        }
+
+        function isMobileView() {
+            return window.matchMedia('(max-width: 640px), (pointer: coarse) and (max-width: 980px)').matches
+                || (isTouchDevice() && window.innerWidth <= 980);
+        }
+
         function syncMobileNavState() {
             const panel = document.getElementById('mobile-nav-panel');
             const trigger = document.getElementById('mobile-nav-trigger');
             if (!panel || !trigger) return;
-            if (window.innerWidth <= 640) {
+            if (isMobileView()) {
                 trigger.style.display = 'flex';
                 panel.classList.remove('open');
                 trigger.setAttribute('aria-expanded', 'false');
@@ -1765,6 +1793,7 @@
             } else {
                 trigger.style.display = 'none';
                 panel.classList.remove('open');
+                panel.style.transform = '';
                 trigger.setAttribute('aria-expanded', 'false');
             }
         }
