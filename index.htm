@@ -965,13 +965,22 @@
         }
 
         @media print {
-            header, .sidebar, footer, .btn, .slide-controls, .no-print-btn-area {
+            /* 1. Sembunyikan TOTAL seluruh elemen input, header, sidebar, dan tombol agar tidak ikut tercetak */
+            header, 
+            .sidebar, 
+            footer, 
+            .btn, 
+            .slide-controls, 
+            .no-print-btn-area, 
+            h2, 
+            .main-container > *:not(.content-panel),
+            .app-section:not(#section-review) {
                 display: none !important;
-                position: absolute !important;
-                top: -9999px !important;
-                left: -9999px !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
             }
             
+            /* 2. Paksa halaman web menjadi putih bersih */
             body, html {
                 background: #ffffff !important;
                 color: #000000 !important;
@@ -997,36 +1006,33 @@
                 width: 100% !important;
             }
 
+            /* 3. PAKSA TAMPILKAN SEKTOR REVIEW PORTOFOLIO SAAT DICETAK */
             .app-section {
                 display: none !important;
             }
 
             #section-review {
                 display: block !important;
+                visibility: visible !important;
                 width: 100% !important;
                 padding: 0 !important;
                 margin: 0 !important;
             }
 
+            /* 4. ATUR BINGKAI EMAS AGAR PAS DAN TIDAK TERPOTONG */
             #printable-area {
+                display: block !important;
+                visibility: visible !important;
                 border: 6px double #d4af37 !important;
                 outline: 2px solid #aa7c11 !important;
                 outline-offset: -16px !important;
                 background: #ffffff !important;
                 color: #000000 !important;
-                padding: 50px !important;
+                padding: 40px !important;
                 box-sizing: border-box !important;
                 page-break-inside: avoid !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .decor-tl::before, .decor-tl::after,
-            .decor-tr::before, .decor-tr::after,
-            .decor-bl::before, .decor-bl::after,
-            .decor-br::before, .decor-br::after {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
