@@ -44,6 +44,9 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col md:flex-row">
 
+    <!-- Toast notifications container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-2"></div>
+
     <aside class="hidden md:flex flex-col w-64 text-slate-400 fixed h-screen z-40 border-r border-slate-900 p-4 justify-between" style="background-color: #0b1329;">
         <div class="space-y-6">
             <div class="flex items-center gap-3 px-2 py-3">
@@ -105,7 +108,7 @@
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
                 <div class="relative z-10 space-y-4">
                     <div class="space-y-2">
-                        <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">Selamat Datang Murid Baru 👋</span>
+                        <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">Selamat Datang Peserta 👋</span>
                         <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">E-Modul MPLS Ramah 2026</h2>
                         <p class="text-xs md:text-sm font-medium text-indigo-100 max-w-2xl leading-relaxed">
                             P4GN (Pencegahan, Pemberantasan, Penyalahgunaan, dan Peredaran Gelap Narkotika)
@@ -153,7 +156,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Nama Lengkap Murid</label>
-                        <input type="text" id="input-nama" placeholder="Ketik nama lengkap Anda..." class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <div class="relative">
+                            <input type="text" id="input-nama" placeholder="Ketik nama lengkap Anda..." autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                            <div id="names-suggestions" class="absolute left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow z-50 hidden max-h-48 overflow-auto text-sm"></div>
+                        </div>
                     </div>
 
                     <div class="space-y-1.5">
@@ -185,8 +191,8 @@
                     </div>
                 </div>
 
-                <div class="pt-2 flex justify-start">
-                    <button onclick="alert('Sinkronisasi data ke spreadsheet berhasil diupdate!')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
+                    <div class="pt-2 flex justify-start">
+                    <button onclick="updateSpreadsheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
                         🟢 Update Spreadsheet
                     </button>
                 </div>
@@ -524,7 +530,7 @@
                         <button onclick="openEditProfilModal()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
                             <span>✏️</span> Edit Profil
                         </button>
-                        <button onclick="window.print()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
+                        <button onclick="prepareAndPrint()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
                             <span>🖨️</span> Cetak Sekarang
                         </button>
                     </div>
@@ -604,11 +610,11 @@
                     <div class="text-center w-5/12 flex flex-col items-center">
                         <p class="text-[10px] text-slate-500 mb-1" id="print-tanggal">Ciamis, 13 Juli 2026</p>
                         <p class="text-[10px] text-slate-500 mb-2">Murid yang membuat pernyataan,</p>
-                        <div class="h-16 w-full flex items-center justify-center overflow-hidden mb-1">
-                            <img id="print-signature-img" src="" alt="Tanda Tangan Murid" class="max-h-full max-w-full hidden object-contain">
-                        </div>
-                        <p id="print-nama-bawah" class="font-bold border-t border-slate-400 pt-1 text-slate-900 w-full truncate">-</p>
-                        <p class="text-[9px] text-slate-400"></p>
+                                <div class="h-20 w-full flex items-center justify-center overflow-hidden mb-1">
+                                    <img id="print-signature-img" src="" alt="Tanda Tangan Murid" class="max-h-full max-w-full hidden object-contain">
+                                </div>
+                                <p id="print-nama-bawah" class="font-bold text-slate-900 w-full truncate">-</p>
+                                <div id="print-nama-line" class="h-0.5 bg-slate-400 mt-2 w-24 mx-auto"></div>
                     </div>
                 </div>
             </div>
@@ -623,6 +629,7 @@
                     <h5 class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide">✏️ Perbaiki Identitas Murid</h5>
                     <button onclick="closeEditProfilModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-base leading-none p-1 font-bold">✕</button>
                 </div>
+                <div id="edit-profil-banner" class="hidden px-4 py-2 text-sm rounded-b-md text-emerald-800 bg-emerald-50 border border-emerald-200">Identitas berhasil diperbarui.</div>
                 <div class="p-5 text-xs space-y-4">
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Nama Lengkap Murid</label>
@@ -750,7 +757,7 @@
         </section>
 
         <footer class="bg-slate-100 dark:bg-slate-955 border-t border-slate-200 dark:border-slate-850 text-center py-4 text-[10px] text-slate-400 dark:text-slate-500 mt-auto no-print">
-            &copy; 2026 MPLS RAMAH - SMAN 2 Ciamis
+            &copy; 2026 MPLS - SMAN 2 Ciamis
         </footer>
     </div>
 
@@ -1104,9 +1111,17 @@
             const nama = document.getElementById('input-nama').value || '(Belum diisi)';
             document.getElementById('print-nama').innerText = nama;
             document.getElementById('print-nama-bawah').innerText = nama;
-            
+
+            // adjust dynamic underline width based on name length
+            const nameLine = document.getElementById('print-nama-line');
+            if (nameLine) {
+                const len = nama && nama !== '(Belum diisi)' ? nama.length : 8;
+                const px = Math.min(420, Math.max(120, Math.round(len * 8))); // clamp width
+                nameLine.style.width = px + 'px';
+            }
+
             document.getElementById('print-jk').innerText = document.getElementById('input-jk').value || '(Belum diisi)';
-            
+
             const kelompokSelect = document.getElementById('input-kelompok').value;
             const kelompokManual = document.getElementById('input-kelompok-manual').value;
             document.getElementById('print-kelompok').innerText = kelompokSelect === 'Lainnya' ? kelompokManual || '(Kelompok Manual Belum Diisi)' : kelompokSelect || '(Belum diisi)';
@@ -1182,8 +1197,20 @@
 
             // Refresh tampilan pada templat cetak secara real-time
             syncDataToPrintTemplate();
-            closeEditProfilModal();
-            alert('Identitas berhasil diperbarui!');
+            // show inline banner in modal instead of alert
+            const banner = document.getElementById('edit-profil-banner');
+            if (banner) {
+                banner.classList.remove('hidden');
+                // also show toast
+                showToast('Identitas berhasil diperbarui!', 'success');
+                setTimeout(() => {
+                    banner.classList.add('hidden');
+                    closeEditProfilModal();
+                }, 1400);
+            } else {
+                showToast('Identitas berhasil diperbarui!', 'success');
+                closeEditProfilModal();
+            }
         }
 
         let canvas, ctx, isDrawing = false;
@@ -1192,42 +1219,48 @@
             canvas = document.getElementById('canvas-signature');
             if (!canvas) return;
             ctx = canvas.getContext('2d');
-            
+
+            // set canvas pixel size to match CSS size
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
-            
-            ctx.strokeStyle = document.documentElement.classList.contains('dark') ? '#60a5fa' : '#1d4ed8';
+
+            // signature stroke color: black
+            ctx.strokeStyle = '#000000';
             ctx.lineWidth = 3;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseleave', stopDrawing);
-
-            canvas.addEventListener('touchstart', (e) => {
-                const touch = e.touches[0];
-                const mouseEvent = new MouseEvent('mousedown', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
+            // Use Pointer Events for consistent mouse/touch handling
+            if (window.PointerEvent) {
+                canvas.addEventListener('pointerdown', (e) => {
+                    isDrawing = true;
+                    ctx.beginPath();
+                    const rect = canvas.getBoundingClientRect();
+                    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+                    canvas.setPointerCapture(e.pointerId);
                 });
-                canvas.dispatchEvent(mouseEvent);
-            }, { passive: true });
-
-            canvas.addEventListener('touchmove', (e) => {
-                const touch = e.touches[0];
-                const mouseEvent = new MouseEvent('mousemove', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
+                canvas.addEventListener('pointermove', (e) => {
+                    if (!isDrawing) return;
+                    const rect = canvas.getBoundingClientRect();
+                    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                    ctx.stroke();
                 });
-                canvas.dispatchEvent(mouseEvent);
-            }, { passive: true });
+                canvas.addEventListener('pointerup', (e) => {
+                    isDrawing = false;
+                    try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+                });
+                canvas.addEventListener('pointercancel', () => { isDrawing = false; });
+            } else {
+                // fallback for older browsers: mouse + touch
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDrawing);
+                canvas.addEventListener('mouseleave', stopDrawing);
 
-            canvas.addEventListener('touchend', () => {
-                const mouseEvent = new MouseEvent('mouseup', {});
-                canvas.dispatchEvent(mouseEvent);
-            });
+                canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const t = e.touches[0]; startDrawing({ clientX: t.clientX, clientY: t.clientY }); }, { passive: false });
+                canvas.addEventListener('touchmove', (e) => { e.preventDefault(); const t = e.touches[0]; draw({ clientX: t.clientX, clientY: t.clientY }); }, { passive: false });
+                canvas.addEventListener('touchend', (e) => { e.preventDefault(); stopDrawing(); }, { passive: false });
+            }
         }
 
         function startDrawing(e) {
@@ -1288,6 +1321,201 @@
 
         let sec = 0; setInterval(() => { sec++; let m = Math.floor(sec/60), s = sec%60; document.getElementById('spend-time-clock').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }, 1000);
 
+        /* --- Integrasi Google Sheets (read-only via public gviz endpoint) --- */
+        const SHEET_ID = '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
+        const SHEET_UPDATE_URL = ''; // <-- Optional: set to your Google Apps Script web app URL to enable updates
+
+        let sheetData = [];
+
+        async function fetchSheetData() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+                const res = await fetch(url);
+                const text = await res.text();
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const json = JSON.parse(jsonText);
+                const rows = (json.table && json.table.rows) ? json.table.rows : [];
+                sheetData = rows.map(r => {
+                    const c = r.c || [];
+                    // Spreadsheet columns: [0]=No., [1]=Nama, [2]=Asal Sekolah, [3]=Jenis Kelamin, [4]=Kelompok
+                    return {
+                        name: c[1] && c[1].v ? String(c[1].v).trim() : '',
+                        jk: c[3] && c[3].v ? String(c[3].v).trim() : '',
+                        kelompok: c[4] && c[4].v ? String(c[4].v).trim() : ''
+                    };
+                }).filter(x => x.name);
+                populateNamesList();
+                populateKelompokOptions();
+            } catch (err) {
+                console.warn('fetchSheetData error', err);
+            }
+        }
+
+        let namesList = [];
+        function populateNamesList() {
+            namesList = sheetData.map(s => s.name).filter(n => n);
+        }
+
+        function populateKelompokOptions() {
+            const sel = document.getElementById('input-kelompok');
+            if (!sel) return;
+            const existingLain = Array.from(sel.options).find(o => o.value === 'Lainnya');
+            sel.innerHTML = '<option value="">-- Pilih Kelompok --</option>';
+            const set = new Set();
+            sheetData.forEach(s => { if (s.kelompok) set.add(s.kelompok); });
+            Array.from(set).forEach(k => {
+                const o = document.createElement('option'); o.value = k; o.text = k; sel.appendChild(o);
+            });
+            const lainOpt = document.createElement('option'); lainOpt.value = 'Lainnya'; lainOpt.text = 'Lainnya (Ketik Manual)'; sel.appendChild(lainOpt);
+        }
+
+        (function attachAutoFill() {
+            const nameInput = document.getElementById('input-nama');
+            const sugBox = document.getElementById('names-suggestions');
+            if (!nameInput || !sugBox) return;
+
+            nameInput.addEventListener('input', function (e) {
+                const v = e.target.value.trim();
+                if (!v) { hideNameSuggestions(); return; }
+                showNameSuggestions(v);
+                const match = sheetData.find(s => s.name.toLowerCase() === v.toLowerCase());
+                if (match) applyMatchToFields(match);
+            });
+
+            nameInput.addEventListener('focus', function () {
+                const v = nameInput.value.trim(); if (v) showNameSuggestions(v);
+            });
+
+            document.addEventListener('click', function (ev) {
+                if (!ev.target.closest('#names-suggestions') && ev.target.id !== 'input-nama') hideNameSuggestions();
+            });
+
+            function renderSuggestions(list) {
+                sugBox.innerHTML = '';
+                if (!list.length) { hideNameSuggestions(); return; }
+                list.forEach(name => {
+                    const div = document.createElement('div');
+                    div.className = 'px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer';
+                    div.innerText = name;
+                    div.addEventListener('click', () => {
+                        nameInput.value = name;
+                        hideNameSuggestions();
+                        const match = sheetData.find(s => s.name.toLowerCase() === name.toLowerCase());
+                        if (match) applyMatchToFields(match);
+                    });
+                    sugBox.appendChild(div);
+                });
+                sugBox.classList.remove('hidden');
+            }
+
+            function showNameSuggestions(query) {
+                const q = query.toLowerCase();
+                const results = namesList.filter(n => n.toLowerCase().includes(q)).slice(0, 50);
+                renderSuggestions(results);
+            }
+
+            function hideNameSuggestions() {
+                sugBox.classList.add('hidden');
+            }
+
+            function normalizeJK(raw) {
+                if (!raw) return '';
+                const r = raw.toString().toLowerCase();
+                if (r.indexOf('laki') !== -1 || r === 'l' ) return 'Laki-laki';
+                if (r.indexOf('perempuan') !== -1 || r === 'p') return 'Perempuan';
+                // fallback: capitalize first letter
+                return raw.charAt(0).toUpperCase() + raw.slice(1);
+            }
+
+            function applyMatchToFields(match) {
+                if (match.jk) {
+                    const jkVal = normalizeJK(match.jk);
+                    const jkSelect = document.getElementById('input-jk');
+                    // if option exists, set it; otherwise set value and leave select as-is
+                    const opt = Array.from(jkSelect.options).find(o => o.value === jkVal);
+                    if (opt) jkSelect.value = jkVal; else jkSelect.value = jkVal;
+                }
+                if (match.kelompok) {
+                    const sel = document.getElementById('input-kelompok');
+                    let found = false;
+                    for (let i = 0; i < sel.options.length; i++) {
+                        if (sel.options[i].value === match.kelompok) { sel.selectedIndex = i; found = true; break; }
+                    }
+                    if (!found) {
+                        sel.value = 'Lainnya';
+                        document.getElementById('container-kelompok-manual').classList.remove('hidden');
+                        document.getElementById('input-kelompok-manual').value = match.kelompok;
+                    } else {
+                        document.getElementById('container-kelompok-manual').classList.add('hidden');
+                        document.getElementById('input-kelompok-manual').value = '';
+                    }
+                }
+            }
+        })();
+
+        function showToast(message, type = 'success', duration = 3000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return alert(message);
+            const toast = document.createElement('div');
+            const color = type === 'error' ? 'bg-rose-50 dark:bg-rose-900/40 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300' : 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300';
+            toast.className = `max-w-sm w-full px-4 py-2 rounded-lg shadow-md border flex items-start gap-3 ${color}`;
+            toast.innerHTML = `<div class="flex-1 text-sm leading-tight">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, duration);
+        }
+
+        function updateSpreadsheet() {
+            const nama = document.getElementById('input-nama').value.trim();
+            if (!nama) return showToast('Mohon isi Nama sebelum melakukan update.', 'error');
+            const jenis_kelamin = document.getElementById('input-jk').value;
+            const kelompok = document.getElementById('input-kelompok').value === 'Lainnya' ? document.getElementById('input-kelompok-manual').value : document.getElementById('input-kelompok').value;
+            const dampak = document.getElementById('lk-analisis-q1') ? document.getElementById('lk-analisis-q1').value.trim() : '';
+            const penolakan = document.getElementById('lk-analisis-q2') ? document.getElementById('lk-analisis-q2').value.trim() : '';
+            const target = document.getElementById('lk-komitmen-target') ? document.getElementById('lk-komitmen-target').value.trim() : '';
+            const support_system = document.getElementById('lk-komitmen-support') ? document.getElementById('lk-komitmen-support').value.trim() : '';
+            const ekskul = document.getElementById('lk-komitmen-ekskul') ? document.getElementById('lk-komitmen-ekskul').value : '';
+            const konsultasi = document.getElementById('lk-komitmen-konsul') ? document.getElementById('lk-komitmen-konsul').value : '';
+            const tanggal = document.getElementById('lk-komitmen-tanggal') ? document.getElementById('lk-komitmen-tanggal').value : '';
+            const screentime = document.getElementById('spend-time-clock') ? document.getElementById('spend-time-clock').innerText : '';
+
+            const payload = { nama, jenis_kelamin, kelompok, dampak, penolakan, target, support_system, ekskul, konsultasi, tanggal, screentime };
+
+            if (!SHEET_UPDATE_URL) {
+                showToast('Fitur update otomatis memerlukan Google Apps Script endpoint. Silakan set SHEET_UPDATE_URL di skrip atau ikuti instruksi README.', 'error');
+                return;
+            }
+
+            fetch(SHEET_UPDATE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.status === 'success') {
+                        showToast('Sinkronisasi data ke spreadsheet berhasil diupdate!', 'success');
+                        fetchSheetData();
+                    } else {
+                        console.warn('Unexpected response', res);
+                        showToast('Update selesai, namun respon server tidak seperti yang diharapkan.', 'error');
+                    }
+                })
+                .catch(err => { console.error(err); showToast('Gagal mengupdate spreadsheet: ' + (err.message || err), 'error'); });
+        }
+
+        function prepareAndPrint() {
+            // ensure cetak page is visible
+            navigateTo('cetak');
+            // wait for render then sync and print
+            setTimeout(() => {
+                syncDataToPrintTemplate();
+                const nama = document.getElementById('input-nama').value.trim();
+                if (nama) document.title = `${nama} - Portofolio MPLS`;
+                else document.title = 'Portofolio MPLS';
+                window.focus();
+                setTimeout(() => window.print(), 400);
+            }, 180);
+        }
+
+        // inisialisasi data dan slide
+        fetchSheetData();
+        renderActiveSlide();
         navigateTo('dashboard');
     </script>
 </body>
