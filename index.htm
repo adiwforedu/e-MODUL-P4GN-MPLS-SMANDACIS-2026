@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +11,22 @@
             darkMode: 'class',
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        #canvas-signature { touch-action: none; }
-        .apa-reference { padding-left: 2rem; text-indent: -2rem; }
-        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        #canvas-signature {
+            touch-action: none;
+        }
+
+        .apa-reference {
+            padding-left: 2rem;
+            text-indent: -2rem;
+        }
+
         /* Gaya Ornamen Bingkai Emas Formal untuk Deklarasi */
         .gold-border-container {
             border: 8px double #d4af37;
@@ -24,24 +35,50 @@
             background: #fff;
             color: #1e293b;
         }
+
         .corner-ornament {
             position: absolute;
             width: 35px;
             height: 35px;
             border: 4px solid #d4af37;
         }
-        .top-left { top: 6px; left: 6px; border-right: none; border-bottom: none; }
-        .top-right { top: 6px; right: 6px; border-left: none; border-bottom: none; }
-        .bottom-left { bottom: 6px; left: 6px; border-right: none; border-top: none; }
-        .bottom-right { bottom: 6px; right: 6px; border-left: none; border-top: none; }
-        
+
+        .top-left {
+            top: 6px;
+            left: 6px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .top-right {
+            top: 6px;
+            right: 6px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .bottom-left {
+            bottom: 6px;
+            left: 6px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .bottom-right {
+            bottom: 6px;
+            right: 6px;
+            border-left: none;
+            border-top: none;
+        }
+
         @media print {
             @page {
                 size: A4 portrait;
                 margin: 8mm;
             }
 
-            html, body {
+            html,
+            body {
                 height: auto !important;
                 overflow: visible !important;
                 background: #fff !important;
@@ -52,8 +89,15 @@
                 padding: 0;
             }
 
-            body * { visibility: hidden; }
-            #page-cetak, #page-cetak * { visibility: visible; }
+            body * {
+                visibility: hidden;
+            }
+
+            #page-cetak,
+            #page-cetak * {
+                visibility: visible;
+            }
+
             #page-cetak {
                 position: static !important;
                 left: auto !important;
@@ -65,20 +109,32 @@
                 overflow: visible !important;
                 box-shadow: none !important;
             }
-            #page-cetak > * { page-break-inside: auto; }
-            .no-print { display: none !important; }
+
+            #page-cetak>* {
+                page-break-inside: auto;
+            }
+
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col md:flex-row">
+
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col md:flex-row">
 
     <!-- Toast notifications container -->
     <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-2"></div>
 
-    <aside class="hidden md:flex flex-col w-64 text-slate-400 fixed h-screen z-40 border-r border-slate-900 p-4 justify-between" style="background-color: #0b1329;">
+    <aside
+        class="hidden md:flex flex-col w-64 text-slate-400 fixed h-screen z-40 border-r border-slate-900 p-4 justify-between"
+        style="background-color: #0b1329;">
         <div class="space-y-6">
             <div class="flex items-center gap-3 px-2 py-3">
-                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md">M</div>
+                <div
+                    class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md">
+                    M</div>
                 <div>
                     <h2 class="font-bold text-sm text-white leading-tight tracking-wide">MPLS</h2>
                     <p class="text-[10px] text-slate-500 font-medium">SMAN 2 Ciamis</p>
@@ -86,22 +142,28 @@
             </div>
 
             <nav class="space-y-2" id="desktop-nav">
-                <button onclick="navigateTo('dashboard')" id="nav-desk-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('dashboard')" id="nav-desk-dashboard"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-sm">📊</span> Dashboard
                 </button>
-                <button onclick="navigateTo('materi')" id="nav-desk-materi" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('materi')" id="nav-desk-materi"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-teal-400 text-sm">📚</span> Materi
                 </button>
-                <button onclick="navigateTo('asesmen')" id="nav-desk-asesmen" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('asesmen')" id="nav-desk-asesmen"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-purple-400 text-sm">📝</span> Asesmen
                 </button>
-                <button onclick="navigateTo('cetak')" id="nav-desk-cetak" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('cetak')" id="nav-desk-cetak"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-blue-400 text-sm">🖨️</span> Cetak
                 </button>
-                <button onclick="navigateTo('refleksi')" id="nav-desk-refleksi" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('refleksi')" id="nav-desk-refleksi"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-pink-400 text-sm">💭</span> Refleksi
                 </button>
-                <button onclick="navigateTo('referensi')" id="nav-desk-referensi" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
+                <button onclick="navigateTo('referensi')" id="nav-desk-referensi"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-amber-400 text-sm">🔖</span> Referensi
                 </button>
             </nav>
@@ -109,61 +171,83 @@
     </aside>
 
     <div class="flex-grow md:pl-64 flex flex-col min-h-screen pb-20 md:pb-0">
-        
-        <nav class="bg-slate-100 dark:bg-slate-955 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 px-6 py-4 flex justify-between items-center shadow-sm">
+
+        <nav
+            class="bg-slate-100 dark:bg-slate-955 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 px-6 py-4 flex justify-between items-center shadow-sm">
             <div class="flex items-center gap-3 md:hidden">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-base">M</div>
-                <h1 class="font-bold text-base text-slate-900 dark:text-white tracking-tight" id="mobile-page-title">Dashboard</h1>
+                <div
+                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-base">
+                    M</div>
+                <h1 class="font-bold text-base text-slate-900 dark:text-white tracking-tight" id="mobile-page-title">
+                    Dashboard</h1>
             </div>
-            
+
             <div class="hidden md:block">
-                <span id="header-page-title" class="text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg tracking-wide shadow-sm border border-slate-200 dark:border-slate-700">Dashboard</span>
+                <span id="header-page-title"
+                    class="text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg tracking-wide shadow-sm border border-slate-200 dark:border-slate-700">Dashboard</span>
             </div>
-            
+
             <div class="flex items-center gap-3">
-                <div id="time-tracker" class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 px-2.5 py-1 rounded-lg">
-                    <span class="text-xs font-bold text-amber-800 dark:text-amber-300 font-mono">⏱️ <span id="spend-time-clock">00:00</span></span>
+                <div id="time-tracker"
+                    class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 px-2.5 py-1 rounded-lg">
+                    <span class="text-xs font-bold text-amber-800 dark:text-amber-300 font-mono">⏱️ <span
+                            id="spend-time-clock">00:00</span></span>
                 </div>
-                <button id="theme-toggle" class="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm">
-                    <svg id="theme-toggle-light-icon" class="hidden w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.05a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm-.707-8.485a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"></path></svg>
-                    <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <button id="theme-toggle"
+                    class="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm">
+                    <svg id="theme-toggle-light-icon" class="hidden w-4 h-4 text-amber-500" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.05a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm-.707-8.485a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z">
+                        </path>
+                    </svg>
+                    <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4 text-slate-500" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
                 </button>
             </div>
         </nav>
 
         <section id="page-dashboard" class="max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div
+                class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white shadow-md relative overflow-hidden">
+                <div
+                    class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]">
+                </div>
                 <div class="relative z-10 space-y-4">
                     <div class="space-y-2">
-                        <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">Selamat Datang Peserta 👋</span>
-                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">E-Modul MPLS Ramah 2026</h2>
+                        <span
+                            class="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">Selamat
+                            Datang Peserta 👋</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">E-Modul MPLS Pancawaluya 2026
+                        </h2>
                         <p class="text-xs md:text-sm font-medium text-indigo-100 max-w-2xl leading-relaxed">
                             P4GN (Pencegahan, Pemberantasan, Penyalahgunaan, dan Peredaran Gelap Narkotika)
                         </p>
                     </div>
-                    
+
                     <div class="flex flex-wrap gap-3 pt-1">
-                        <div onmouseenter="showDynamicTooltip(this, 'Proses belajar di mana siswa hadir sepenuhnya, paham tujuan pembelajaran, aktif menjadi pembelajar, dan mampu meregulasi/mengontrol diri sendiri.')" 
-                             onmouseleave="hideDynamicTooltip()" 
-                             onclick="showDynamicTooltip(this, 'Proses belajar di mana siswa hadir sepenuhnya, paham tujuan pembelajaran, aktif menjadi pembelajar, dan mampu meregulasi/mengontrol diri sendiri.', true)"
-                             class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
+                        <div onmouseenter="showDynamicTooltip(this, 'Proses belajar di mana siswa hadir sepenuhnya, paham tujuan pembelajaran, aktif menjadi pembelajar, dan mampu meregulasi/mengontrol diri sendiri.')"
+                            onmouseleave="hideDynamicTooltip()"
+                            onclick="showDynamicTooltip(this, 'Proses belajar di mana siswa hadir sepenuhnya, paham tujuan pembelajaran, aktif menjadi pembelajar, dan mampu meregulasi/mengontrol diri sendiri.', true)"
+                            class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
                             <span class="text-base">🧠</span>
                             <span class="text-xs font-bold tracking-wide">Berkesadaran</span>
                         </div>
 
-                        <div onmouseenter="showDynamicTooltip(this, 'Pengalaman belajar yang relevan dan kontekstual. Siswa dapat mengaitkan materi dengan kehidupan nyata serta merasakan manfaat langsung dari ilmu yang dipelajarinya.')" 
-                             onmouseleave="hideDynamicTooltip()" 
-                             onclick="showDynamicTooltip(this, 'Pengalaman belajar yang relevan dan kontekstual. Siswa dapat mengaitkan materi dengan kehidupan nyata serta merasakan manfaat langsung dari ilmu yang dipelajarinya.', true)"
-                             class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
+                        <div onmouseenter="showDynamicTooltip(this, 'Pengalaman belajar yang relevan dan kontekstual. Siswa dapat mengaitkan materi dengan kehidupan nyata serta merasakan manfaat langsung dari ilmu yang dipelajarinya.')"
+                            onmouseleave="hideDynamicTooltip()"
+                            onclick="showDynamicTooltip(this, 'Pengalaman belajar yang relevan dan kontekstual. Siswa dapat mengaitkan materi dengan kehidupan nyata serta merasakan manfaat langsung dari ilmu yang dipelajarinya.', true)"
+                            class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
                             <span class="text-base">💎</span>
                             <span class="text-xs font-bold tracking-wide">Bermakna</span>
                         </div>
 
-                        <div onmouseenter="showDynamicTooltip(this, 'Suasana belajar yang positif, bebas tekanan, dan menyenangkan. Hal ini memicu rasa ingin tahu tinggi serta motivasi intrinsik dari dalam diri siswa.')" 
-                             onmouseleave="hideDynamicTooltip()" 
-                             onclick="showDynamicTooltip(this, 'Suasana belajar yang positif, bebas tekanan, dan menyenangkan. Hal ini memicu rasa ingin tahu tinggi serta motivasi intrinsik dari dalam diri siswa.', true)"
-                             class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
+                        <div onmouseenter="showDynamicTooltip(this, 'Suasana belajar yang positif, bebas tekanan, dan menyenangkan. Hal ini memicu rasa ingin tahu tinggi serta motivasi intrinsik dari dalam diri siswa.')"
+                            onmouseleave="hideDynamicTooltip()"
+                            onclick="showDynamicTooltip(this, 'Suasana belajar yang positif, bebas tekanan, dan menyenangkan. Hal ini memicu rasa ingin tahu tinggi serta motivasi intrinsik dari dalam diri siswa.', true)"
+                            class="bg-amber-400 text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md cursor-pointer border border-amber-300 transition-all hover:scale-105 select-none">
                             <span class="text-base">✨</span>
                             <span class="text-xs font-bold tracking-wide">Menggembirakan</span>
                         </div>
@@ -171,28 +255,37 @@
                 </div>
             </div>
 
-            <div id="dynamic-tooltip" class="fixed hidden bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] p-3 rounded-xl shadow-2xl z-50 pointer-events-none max-w-[280px] sm:max-w-xs leading-relaxed transition-opacity duration-200 opacity-0 border border-slate-700/20">
+            <div id="dynamic-tooltip"
+                class="fixed hidden bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[11px] p-3 rounded-xl shadow-2xl z-50 pointer-events-none max-w-[280px] sm:max-w-xs leading-relaxed transition-opacity duration-200 opacity-0 border border-slate-700/20">
                 <span id="tooltip-text"></span>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 max-w-3xl mx-auto">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-5 max-w-3xl mx-auto">
                 <div class="border-b border-slate-100 dark:border-slate-700 pb-3">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">📝 Form Registrasi Data Murid MPLS</h3>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Silakan lengkapi data diri Anda sebelum memulai pembelajaran modul.</p>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">📝 Form
+                        Registrasi Data Murid MPLS</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Silakan lengkapi data diri Anda sebelum memulai
+                        pembelajaran modul.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Nama Lengkap Murid</label>
                         <div class="relative">
-                            <input type="text" id="input-nama" placeholder="Ketik nama lengkap Anda..." autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
-                            <div id="names-suggestions" class="absolute left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow z-50 hidden max-h-48 overflow-auto text-sm"></div>
+                            <input type="text" id="input-nama" placeholder="Ketik nama lengkap Anda..."
+                                autocomplete="off"
+                                class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                            <div id="names-suggestions"
+                                class="absolute left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow z-50 hidden max-h-48 overflow-auto text-sm">
+                            </div>
                         </div>
                     </div>
 
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Jenis Kelamin</label>
-                        <select id="input-jk" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <select id="input-jk"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                             <option value="">-- Pilih Jenis Kelamin --</option>
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
@@ -200,8 +293,10 @@
                     </div>
 
                     <div class="space-y-1.5 md:col-span-2">
-                        <label class="block font-semibold text-slate-700 dark:text-slate-300">Kelas / Kelompok Materi</label>
-                        <select id="input-kelompok" onchange="checkKelompokLainnya(this.value)" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <label class="block font-semibold text-slate-700 dark:text-slate-300">Kelas / Kelompok
+                            Materi</label>
+                        <select id="input-kelompok" onchange="checkKelompokLainnya(this.value)"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                             <option value="">-- Pilih Kelompok --</option>
                             <option value="Kelompok 1 - Arjuna">Kelompok 1 - Arjuna</option>
                             <option value="Kelompok 2 - Bima">Kelompok 2 - Bima</option>
@@ -209,25 +304,24 @@
                             <option value="Lainnya">Lainnya (Ketik Manual)</option>
                         </select>
                         <p class="text-[10px] text-amber-600 dark:text-amber-400 font-medium mt-1">
-                            Dropdown kelompok diambil langsung dari spreadsheet. Jika tidak tersedia, pilih "Lainnya" lalu ketik manual
+                            Dropdown kelompok diambil langsung dari spreadsheet. Jika tidak tersedia, pilih "Lainnya"
+                            lalu ketik manual
                         </p>
                     </div>
 
                     <div id="container-kelompok-manual" class="hidden space-y-1.5 md:col-span-2">
-                        <label class="block font-semibold text-slate-700 dark:text-slate-300">Ketik Kelompok Manual</label>
-                        <input type="text" id="input-kelompok-manual" placeholder="Masukkan nama kelompok baru..." class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <label class="block font-semibold text-slate-700 dark:text-slate-300">Ketik Kelompok
+                            Manual</label>
+                        <input type="text" id="input-kelompok-manual" placeholder="Masukkan nama kelompok baru..."
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
 
-                    <div class="pt-2 flex justify-start">
-                    <button onclick="updateSpreadsheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
-                        🟢 Update Spreadsheet
-                    </button>
-                </div>
             </div>
 
             <div class="max-w-3xl mx-auto pt-2 text-center">
-                <button onclick="navigateTo('materi')" class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-8 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <button onclick="navigateTo('materi')"
+                    class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-8 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                     🚀 Buka Materi Modul
                 </button>
             </div>
@@ -237,42 +331,55 @@
             <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
                 <div>
                     <h3 class="text-sm font-bold text-slate-900 dark:text-white">📚 E-Modul Interaktif P4GN</h3>
-                    <p class="text-[10px] text-slate-400 mt-0.5">Pencegahan, Pemberantasan, Penyalahgunaan, dan Peredaran Gelap Narkotika</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Pencegahan, Pemberantasan, Penyalahgunaan, dan
+                        Peredaran Gelap Narkotika</p>
                 </div>
                 <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider">
                     SLIDE <span id="slide-number-indicator">1</span> / 6
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[400px]">
-                
+            <div
+                class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[400px]">
+
                 <div class="w-full md:w-2/5 h-48 md:h-auto relative bg-slate-100 dark:bg-slate-900">
-                    <img id="slide-image" src="" alt="Visualisasi Materi" class="w-full h-full object-cover transition-all duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/40 via-transparent to-transparent"></div>
+                    <img id="slide-image" src="" alt="Visualisasi Materi"
+                        class="w-full h-full object-cover transition-all duration-500">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/40 via-transparent to-transparent">
+                    </div>
                 </div>
 
                 <div class="w-full md:w-3/5 p-6 flex flex-col justify-between space-y-6">
                     <div class="space-y-3">
-                        <h4 id="slide-title" class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug"></h4>
-                        <p id="slide-description" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium"></p>
+                        <h4 id="slide-title"
+                            class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
+                        </h4>
+                        <p id="slide-description"
+                            class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium"></p>
                     </div>
 
                     <div class="space-y-4">
                         <div>
-                            <button onclick="openMateriModal()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition-all inline-flex items-center gap-1.5 transform active:scale-95">
+                            <button onclick="openMateriModal()"
+                                class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition-all inline-flex items-center gap-1.5 transform active:scale-95">
                                 🔍 Klik & Pelajari Fakta
                             </button>
                         </div>
 
-                        <div id="slide-badge-container" class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 p-3 rounded-xl">
-                            <p id="slide-badge-text" class="text-[11px] font-bold text-blue-700 dark:text-blue-400 leading-normal"></p>
+                        <div id="slide-badge-container"
+                            class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 p-3 rounded-xl">
+                            <p id="slide-badge-text"
+                                class="text-[11px] font-bold text-blue-700 dark:text-blue-400 leading-normal"></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex justify-between items-center bg-slate-100 dark:bg-slate-955 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <button id="btn-slide-prev" onclick="changeSlide(-1)" class="flex items-center gap-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+            <div
+                class="flex justify-between items-center bg-slate-100 dark:bg-slate-955 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <button id="btn-slide-prev" onclick="changeSlide(-1)"
+                    class="flex items-center gap-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                     ⬅️ Back
                 </button>
                 <div class="flex gap-1">
@@ -283,43 +390,61 @@
                     <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-5"></span>
                     <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-6"></span>
                 </div>
-                <button id="btn-slide-next" onclick="changeSlide(1)" class="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
+                <button id="btn-slide-next" onclick="changeSlide(1)"
+                    class="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
                     Next ➡️
                 </button>
             </div>
 
             <hr class="border-slate-200 dark:border-slate-700 my-6">
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-4">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-4">
                 <div class="space-y-1">
-                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">🎬 Menonton Film Pendek Bahaya Napza</h3>
-                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 mt-2">
+                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">🎬 Menonton Film
+                        Pendek Bahaya Napza</h3>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 mt-2">
                         <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tujuan Kegiatan:</p>
                         <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 list-none pl-1">
                             <li class="flex items-start gap-1.5">
-                                <span>1)</span> 
-                                <span>Memberikan pemahaman yang lebih nyata dan emosional tentang penyalahgunaan NAPZA.</span>
+                                <span>1)</span>
+                                <span>Memberikan pemahaman yang lebih nyata dan emosional tentang penyalahgunaan
+                                    NAPZA.</span>
                             </li>
                             <li class="flex items-start gap-1.5">
-                                <span>2)</span> 
-                                <span>🎯 Menguatkan sikap dan komitmen murid untuk menjaga diri serta lingkungan sekolah bebas dari NAPZA.</span>
+                                <span>2)</span>
+                                <span>🎯 Menguatkan sikap dan komitmen murid untuk menjaga diri serta lingkungan sekolah
+                                    bebas dari NAPZA.</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="space-y-3 pt-2">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Film Pendek yang Ingin Ditonton:</label>
-                    <select id="select-youtube" onchange="changeYoutubeEmbed(this.value)" class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium">
-                        <option value="https://www.youtube.com/embed/F0j-4qkX6bM?si=Sa-cDfbdL4WbI3Ak">Pilihan 1: Milenial Anti Narkoba</option>
-                        <option value="https://www.youtube.com/embed/WXn_-kpMA2M?si=dEuotIci_ZnLkAYx">Pilihan 2: Film Pendek Narkoba</option>
-                        <option value="https://www.youtube.com/embed/ywzDfUkIJGQ?si=VFU1KYWBnPAxZhyf">Pilihan 3: Cara Asertif Menolak Ajakan Narkoba</option>
-                        <option value="https://www.youtube.com/embed/ZhYszcLbDIo?si=ud3CQHaWeFucrbnq">Pilihan 4: Apa itu Narkoba? Mengapa berbahaya? Cara agar terhindar</option>
-                        <option value="https://www.youtube.com/embed/M6QcUp5smjU?si=sIzQz5spSW-QT9wO">Pilihan 5: Apa rasanya keecanduan Narkoba?</option>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Film Pendek yang
+                        Ingin Ditonton:</label>
+                    <select id="select-youtube" onchange="changeYoutubeEmbed(this.value)"
+                        class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium">
+                        <option value="https://www.youtube.com/embed/F0j-4qkX6bM?si=Sa-cDfbdL4WbI3Ak">Pilihan 1:
+                            Milenial Anti Narkoba</option>
+                        <option value="https://www.youtube.com/embed/WXn_-kpMA2M?si=dEuotIci_ZnLkAYx">Pilihan 2: Film
+                            Pendek Narkoba</option>
+                        <option value="https://www.youtube.com/embed/ywzDfUkIJGQ?si=VFU1KYWBnPAxZhyf">Pilihan 3: Cara
+                            Asertif Menolak Ajakan Narkoba</option>
+                        <option value="https://www.youtube.com/embed/ZhYszcLbDIo?si=ud3CQHaWeFucrbnq">Pilihan 4: Apa itu
+                            Narkoba? Mengapa berbahaya? Cara agar terhindar</option>
+                        <option value="https://www.youtube.com/embed/M6QcUp5smjU?si=sIzQz5spSW-QT9wO">Pilihan 5: Apa
+                            rasanya keecanduan Narkoba?</option>
                     </select>
 
-                    <div class="w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-inner bg-black">
-                        <iframe id="youtube-iframe" class="w-full h-full" src="https://www.youtube.com/embed/F0j-4qkX6bM?si=Sa-cDfbdL4WbI3Ak" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <div
+                        class="w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-inner bg-black">
+                        <iframe id="youtube-iframe" class="w-full h-full"
+                            src="https://www.youtube.com/embed/F0j-4qkX6bM?si=Sa-cDfbdL4WbI3Ak"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
@@ -328,69 +453,111 @@
 
             <div class="space-y-4">
                 <div class="text-center md:text-left">
-                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center justify-center md:justify-start gap-2">
+                    <h3
+                        class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center justify-center md:justify-start gap-2">
                         🎮 Permainan: Mitos atau Fakta
                     </h3>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Uji pemahamanmu mengenai NAPZA! Klik tombol "Mitos" atau "Fakta" pada setiap kartu pernyataan di bawah ini.</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Uji pemahamanmu mengenai NAPZA! Klik tombol "Mitos"
+                        atau "Fakta" pada setiap kartu pernyataan di bawah ini.</p>
                 </div>
 
                 <div class="space-y-4" id="quiz-container">
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
+                    <div
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
                         <p class="text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2">
-                            <span class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">A</span>
+                            <span
+                                class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">A</span>
                             <span>NAPZA hanya berbahaya jika digunakan dalam jumlah besar.</span>
                         </p>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Bahkan dalam jumlah kecil, NAPZA bisa menyebabkan kerusakan otak dan kecanduan.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌ Mitos</button>
-                            <button onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Bahkan dalam jumlah kecil, NAPZA bisa menyebabkan kerusakan otak dan kecanduan.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅ Fakta</button>
+                            <button
+                                onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Bahkan dalam jumlah kecil, NAPZA bisa menyebabkan kerusakan otak dan kecanduan.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌
+                                Mitos</button>
+                            <button
+                                onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Bahkan dalam jumlah kecil, NAPZA bisa menyebabkan kerusakan otak dan kecanduan.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅
+                                Fakta</button>
                         </div>
                         <div class="feedback-box hidden text-[11px] p-3 rounded-xl border mt-2"></div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
+                    <div
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
                         <p class="text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2">
-                            <span class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">B</span>
+                            <span
+                                class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">B</span>
                             <span>Merokok dan minum alkohol bisa menjadi pintu awal penyalahgunaan NAPZA.</span>
                         </p>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer(this, 'Mitos', 'Fakta', 'Rokok dan alkohol sering disebut sebagai pintu awal penyalahgunaan NAPZA.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌ Mitos</button>
-                            <button onclick="checkAnswer(this, 'Fakta', 'Fakta', 'Rokok dan alkohol sering disebut sebagai pintu awal penyalahgunaan NAPZA.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅ Fakta</button>
+                            <button
+                                onclick="checkAnswer(this, 'Mitos', 'Fakta', 'Rokok dan alkohol sering disebut sebagai pintu awal penyalahgunaan NAPZA.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌
+                                Mitos</button>
+                            <button
+                                onclick="checkAnswer(this, 'Fakta', 'Fakta', 'Rokok dan alkohol sering disebut sebagai pintu awal penyalahgunaan NAPZA.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅
+                                Fakta</button>
                         </div>
                         <div class="feedback-box hidden text-[11px] p-3 rounded-xl border mt-2"></div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
+                    <div
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
                         <p class="text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2">
-                            <span class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">C</span>
+                            <span
+                                class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">C</span>
                             <span>NAPZA hanya digunakan oleh orang dewasa saja.</span>
                         </p>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Banyak penyalahgunaan justru dimulai sejak remaja.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌ Mitos</button>
-                            <button onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Banyak penyalahgunaan justru dimulai sejak remaja.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅ Fakta</button>
+                            <button
+                                onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Banyak penyalahgunaan justru dimulai sejak remaja.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌
+                                Mitos</button>
+                            <button
+                                onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Banyak penyalahgunaan justru dimulai sejak remaja.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅
+                                Fakta</button>
                         </div>
                         <div class="feedback-box hidden text-[11px] p-3 rounded-xl border mt-2"></div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
+                    <div
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
                         <p class="text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2">
-                            <span class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">D</span>
+                            <span
+                                class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">D</span>
                             <span>Orang yang pernah pakai NAPZA tidak bisa pulih lagi.</span>
                         </p>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Dengan dukungan dan rehabilitasi, mereka bisa pulih dan kembali ke masyarakat.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌ Mitos</button>
-                            <button onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Dengan dukungan dan rehabilitasi, mereka bisa pulih dan kembali ke masyarakat.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅ Fakta</button>
+                            <button
+                                onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Dengan dukungan dan rehabilitasi, mereka bisa pulih dan kembali ke masyarakat.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌
+                                Mitos</button>
+                            <button
+                                onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Dengan dukungan dan rehabilitasi, mereka bisa pulih dan kembali ke masyarakat.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅
+                                Fakta</button>
                         </div>
                         <div class="feedback-box hidden text-[11px] p-3 rounded-xl border mt-2"></div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
+                    <div
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm space-y-3 transition-all">
                         <p class="text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2">
-                            <span class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">E</span>
+                            <span
+                                class="bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2 py-0.5 rounded text-[10px]">E</span>
                             <span>Menolak ajakan teman untuk mencoba NAPZA menunjukkan kamu gak keren.</span>
                         </p>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Menolak NAPZA justru menunjukkan keberanian dan ketegasan diri.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌ Mitos</button>
-                            <button onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Menolak NAPZA justru menunjukkan keberanian dan ketegasan diri.')" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅ Fakta</button>
+                            <button
+                                onclick="checkAnswer(this, 'Mitos', 'Mitos', 'Menolak NAPZA justru menunjukkan keberanian dan ketegasan diri.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">❌
+                                Mitos</button>
+                            <button
+                                onclick="checkAnswer(this, 'Fakta', 'Mitos', 'Menolak NAPZA justru menunjukkan keberanian dan ketegasan diri.')"
+                                class="px-4 py-2 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold transition-all">✅
+                                Fakta</button>
                         </div>
                         <div class="feedback-box hidden text-[11px] p-3 rounded-xl border mt-2"></div>
                     </div>
@@ -398,52 +565,72 @@
             </div>
         </section>
 
-        <div id="materi-modal" class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
-            <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all scale-95 duration-300 max-h-[90vh] flex flex-col">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-955">
-                    <h5 id="modal-header-title" class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide pr-4"></h5>
-                    <button onclick="closeMateriModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-base leading-none p-1 font-bold">✕</button>
+        <div id="materi-modal"
+            class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all scale-95 duration-300 max-h-[90vh] flex flex-col">
+                <div
+                    class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-955">
+                    <h5 id="modal-header-title"
+                        class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide pr-4"></h5>
+                    <button onclick="closeMateriModal()"
+                        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-base leading-none p-1 font-bold">✕</button>
                 </div>
-                <div id="modal-body-content" class="p-5 overflow-y-auto text-xs leading-relaxed text-slate-600 dark:text-slate-300 space-y-3">
+                <div id="modal-body-content"
+                    class="p-5 overflow-y-auto text-xs leading-relaxed text-slate-600 dark:text-slate-300 space-y-3">
                 </div>
             </div>
         </div>
 
         <section id="page-asesmen" class="hidden max-w-4xl w-full mx-auto px-4 py-6 space-y-8">
-            
+
             <!-- 1. LEMBAR KERJA (LK) ANALISIS STUDI KASUS -->
             <div class="space-y-4">
-                <h2 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">LK: Studi Kasus Penalaran Kritis</h2>
-                
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-5">
-                    
+                <h2 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">LK: Studi Kasus
+                    Penalaran Kritis</h2>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-5">
+
                     <!-- Kotak Dialog Skenario Riil Remaja -->
                     <div class="border-l-4 border-rose-500 pl-4 py-1.5 bg-rose-50/50 dark:bg-rose-955/20 rounded-r-xl">
-                        <span class="block text-xs font-bold text-slate-755 dark:text-slate-300 italic">Skenario Riil Remaja:</span>
+                        <span class="block text-xs font-bold text-slate-755 dark:text-slate-300 italic">Skenario Riil
+                            Remaja:</span>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-1">
-                            "Rian ditawarkan sebuah pil misterius oleh lingkaran pertemanan barunya di belakang area kantin dengan dalih pembuktian loyalitas agar tidak dicap sebagai anak cupu. Rian mengalami perang batin yang hebat."
+                            "Rian ditawarkan sebuah pil misterius oleh lingkaran pertemanan barunya di belakang area
+                            kantin dengan dalih pembuktian loyalitas agar tidak dicap sebagai anak cupu. Rian mengalami
+                            perang batin yang hebat."
                         </p>
                     </div>
 
                     <!-- Pertanyaan 1 -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase">
-                            1. ANALISIS SECARA KRITIS DAMPAK TERBURUK BAGI MASA DEPAN AKADEMIS AND FISIK TOKOH TERSEBUT JIKA MENERIMA TAWARAN!
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase">
+                            1. ANALISIS SECARA KRITIS DAMPAK TERBURUK BAGI MASA DEPAN AKADEMIS AND FISIK TOKOH TERSEBUT
+                            JIKA MENERIMA TAWARAN!
                         </label>
-                        <textarea id="lk-analisis-q1" rows="3" placeholder="Gunakan pemahamanmu dari slide sebelumnya mengenai kerusakan organ tubuh & sanksi sekolah..." class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner"></textarea>
+                        <textarea id="lk-analisis-q1" rows="3"
+                            placeholder="Gunakan pemahamanmu dari slide sebelumnya mengenai kerusakan organ tubuh & sanksi sekolah..."
+                            class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner"></textarea>
                     </div>
 
                     <!-- Pertanyaan 2 -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase">
-                            2. BUATLAH SATU KALIMAT PENOLAKAN ASERTIF (TEGAS NAMUN KEREN) YANG BISA MEMATAHKAN AJAKAN TERSEBUT!
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase">
+                            2. BUATLAH SATU KALIMAT PENOLAKAN ASERTIF (TEGAS NAMUN KEREN) YANG BISA MEMATAHKAN AJAKAN
+                            TERSEBUT!
                         </label>
-                        <textarea id="lk-analisis-q2" rows="3" placeholder="Gunakan jurus trik jitu ngomong asertif yang sudah dipelajari..." class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner"></textarea>
+                        <textarea id="lk-analisis-q2" rows="3"
+                            placeholder="Gunakan jurus trik jitu ngomong asertif yang sudah dipelajari..."
+                            class="w-full px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner"></textarea>
                     </div>
 
                     <!-- Tombol Aksi Simpan Jawaban & Lanjut -->
                     <div class="pt-1">
-                        <button onclick="saveAndScrollToKomitmen()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-[11px] px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1">
+                        <button onclick="saveAndScrollToKomitmen()"
+                            class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-[11px] px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1">
                             SIMPAN JAWABAN & LANJUT ➔
                         </button>
                     </div>
@@ -456,37 +643,50 @@
             <!-- 2. LEMBAR KERJA (LK) KOMITMEN -->
             <div id="target-lk-komitmen" class="space-y-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">LK: Rencana Aksi & Deklarasi Komitmen</h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Mari petakan benteng pertahanan dirimu secara mandiri melalui rencana aksi nyata di bawah ini.</p>
+                    <h2 class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">LK: Rencana Aksi
+                        & Deklarasi Komitmen</h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Mari petakan benteng pertahanan dirimu secara mandiri
+                        melalui rencana aksi nyata di bawah ini.</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-5">
-                    
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm space-y-5">
+
                     <!-- Input 1: Target Prestasi -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             🔮 TARGET PRESTASI TERDEKAT (RESOLUSI 1 TAHUN KE DEPAN DI SMA)
                         </label>
-                        <input type="text" id="lk-komitmen-target" placeholder="Contoh: Juara umum kelas, Juara O2SN badminton, atau aktif jadi pengurus intra/ekskul..." class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner">
+                        <input type="text" id="lk-komitmen-target"
+                            placeholder="Contoh: Juara umum kelas, Juara O2SN badminton, atau aktif jadi pengurus intra/ekskul..."
+                            class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner">
                     </div>
 
                     <!-- Input 2: Support System -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             👥 DAFTAR SUPPORT SYSTEM (NAMA TEMAN DEKAT / KELUARGA YANG SALING MENJAGA)
                         </label>
-                        <input type="text" id="lk-komitmen-support" placeholder="Contoh: Andi (Teman sebangku), Kak Riska (Kakak kandung), Bu Ratna (Wali kelas)" class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner">
+                        <input type="text" id="lk-komitmen-support"
+                            placeholder="Contoh: Andi (Teman sebangku), Kak Riska (Kakak kandung), Bu Ratna (Wali kelas)"
+                            class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium placeholder-slate-400 shadow-inner">
                     </div>
 
                     <!-- Kotak Narasi Ikrar Komitmen Karakter Murid -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             📝 IKRAR KOMITMEN KARAKTER MURID
                         </label>
-                        <div class="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed space-y-3 shadow-inner">
+                        <div
+                            class="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed space-y-3 shadow-inner">
                             <p>
-                                Saya berkomitmen mutlak melindungi mimpi dan masa depan saya dari jerat narkoba dengan aktif bergabung pada ekstrakurikuler 
-                                <select id="lk-komitmen-ekskul" class="mx-1 px-2 py-1 border border-slate-300 dark:border-slate-650 bg-white dark:bg-slate-800 rounded-lg focus:outline-none focus:border-blue-500 text-xs font-semibold inline-block">
+                                Saya berkomitmen mutlak melindungi mimpi dan masa depan saya dari jerat narkoba dengan
+                                aktif bergabung pada ekstrakurikuler
+                                <select id="lk-komitmen-ekskul"
+                                    class="mx-1 px-2 py-1 border border-slate-300 dark:border-slate-650 bg-white dark:bg-slate-800 rounded-lg focus:outline-none focus:border-blue-500 text-xs font-semibold inline-block">
                                     <option value="">[Pilih Wadah Kreativitas]</option>
                                     <option value="Pramuka">Pramuka</option>
                                     <option value="PMR">PMR (Palang Merah Remaja)</option>
@@ -497,8 +697,10 @@
                                 </select>.
                             </p>
                             <p>
-                                Jika di kemudian hari saya didera problematika psikologis atau stres belajar, saya siap menyalurkannya secara sehat dan berkonsultasi kepada 
-                                <select id="lk-komitmen-konsul" class="mx-1 px-2 py-1 border border-slate-300 dark:border-slate-650 bg-white dark:bg-slate-800 rounded-lg focus:outline-none focus:border-blue-500 text-xs font-semibold inline-block">
+                                Jika di kemudian hari saya didera problematika psikologis atau stres belajar, saya siap
+                                menyalurkannya secara sehat dan berkonsultasi kepada
+                                <select id="lk-komitmen-konsul"
+                                    class="mx-1 px-2 py-1 border border-slate-300 dark:border-slate-650 bg-white dark:bg-slate-800 rounded-lg focus:outline-none focus:border-blue-500 text-xs font-semibold inline-block">
                                     <option value="">Contoh: Tim BK / Orang Tua / Wali Kelas</option>
                                     <option value="Tim BK Smandacis">Tim Guru BK Smandacis</option>
                                     <option value="Orang Tua Kandung">Orang Tua Kandung di Rumah</option>
@@ -510,24 +712,30 @@
 
                     <!-- Input 3: Tanggal Input Komitmen -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             📅 TANGGAL INPUT KOMITMEN
                         </label>
-                        <input type="date" id="lk-komitmen-tanggal" class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-semibold shadow-inner">
+                        <input type="date" id="lk-komitmen-tanggal"
+                            class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-semibold shadow-inner">
                     </div>
 
                     <!-- Input 4: Tanda Tangan Digital Murid -->
                     <div class="space-y-2">
-                        <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
+                        <label
+                            class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             ✍️ TANDA TANGAN DIGITAL MURID (GUNAKAN JARI / MOUSE DI AREA PUTIH INI)
                         </label>
-                        <div class="w-full border-2 border-dashed border-blue-400 dark:border-blue-600 rounded-xl overflow-hidden relative bg-white dark:bg-slate-955 shadow-inner group">
+                        <div
+                            class="w-full border-2 border-dashed border-blue-400 dark:border-blue-600 rounded-xl overflow-hidden relative bg-white dark:bg-slate-955 shadow-inner group">
                             <!-- Canvas Tanda Tangan -->
-                            <canvas id="canvas-signature" class="w-full h-40 cursor-crosshair block bg-transparent"></canvas>
-                            
+                            <canvas id="canvas-signature"
+                                class="w-full h-40 cursor-crosshair block bg-transparent"></canvas>
+
                             <!-- Tombol Bersihkan Tanda Tangan -->
                             <div class="absolute bottom-2 right-2 z-10">
-                                <button type="button" onclick="clearSignatureCanvas()" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-[10px] px-3 py-1.5 rounded-lg transition-colors border border-slate-300 dark:border-slate-600 tracking-wide uppercase">
+                                <button type="button" onclick="clearSignatureCanvas()"
+                                    class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-[10px] px-3 py-1.5 rounded-lg transition-colors border border-slate-300 dark:border-slate-600 tracking-wide uppercase">
                                     BERSIHKAN TANDA TANGAN
                                 </button>
                             </div>
@@ -536,7 +744,8 @@
 
                     <!-- Tombol Aksi Akhir Kunci Portfolio -->
                     <div class="pt-2">
-                        <button onclick="lockPortfolioAndRedirect()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-[11px] px-6 py-3 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1">
+                        <button onclick="lockPortfolioAndRedirect()"
+                            class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-[11px] px-6 py-3 rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1">
                             KUNCI PORTFOLIO HASIL MODUL ➔
                         </button>
                     </div>
@@ -548,17 +757,22 @@
         <!-- HALAMAN CETAK DENGAN TEMPLAT DEKLARASI RESMI -->
         <!-- ========================================== -->
         <section id="page-cetak" class="hidden max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm no-print">
+            <div
+                class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm no-print">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white">🖨️ Dokumen Portofolio Akhir Anda</h3>
-                        <p class="text-xs text-slate-400 mt-1">Gunakan tombol di samping untuk mengedit profil jika salah tulis, atau mencetak hasil deklarasi Anda.</p>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">🖨️ Dokumen Portofolio Akhir Anda
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Gunakan tombol di samping untuk mengedit profil jika
+                            salah tulis, atau mencetak hasil deklarasi Anda.</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="openEditProfilModal()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
+                        <button onclick="openEditProfilModal()"
+                            class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
                             <span>✏️</span> Edit Profil
                         </button>
-                        <button onclick="prepareAndPrint()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
+                        <button onclick="prepareAndPrint()"
+                            class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors flex items-center justify-center gap-2">
                             <span>🖨️</span> Cetak Sekarang
                         </button>
                     </div>
@@ -575,14 +789,19 @@
 
                 <!-- Kop Surat / Dokumen -->
                 <div class="text-center border-b-4 border-double border-slate-800 pb-4 mb-6">
-                    <h1 class="text-lg font-extrabold tracking-wider text-slate-955 uppercase">PORTOFOLIO AKHIR P4GN - SMANDACIS</h1>
-                    <h2 class="text-sm font-bold text-slate-700 tracking-wide mt-0.5">Masa Pengenalan Lingkungan Sekolah 2026</h2>
-                    <p class="text-[10px] text-slate-500 italic mt-1">SMAN 2 Ciamis • Jl. KH. Ahmad Dahlan No.2, Ciamis, Jawa Barat</p>
+                    <h1 class="text-lg font-extrabold tracking-wider text-slate-955 uppercase">PORTOFOLIO AKHIR P4GN -
+                        SMANDACIS</h1>
+                    <h2 class="text-sm font-bold text-slate-700 tracking-wide mt-0.5">Masa Pengenalan Lingkungan Sekolah
+                        2026</h2>
+                    <p class="text-[10px] text-slate-500 italic mt-1">SMAN 2 Ciamis • Jl. KH. Ahmad Dahlan No.2, Ciamis,
+                        Jawa Barat</p>
                 </div>
 
                 <!-- Konten Integrasi Data Registrasi -->
                 <div class="mb-5 space-y-2 text-xs">
-                    <h3 class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">I. Registrasi Data Diri Murid</h3>
+                    <h3
+                        class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">
+                        I. Registrasi Data Diri Murid</h3>
                     <table class="w-full text-left">
                         <tr>
                             <td class="w-1/3 font-semibold py-1">Nama Lengkap</td>
@@ -604,31 +823,48 @@
 
                 <!-- Konten Integrasi LK Analisis -->
                 <div class="mb-5 space-y-3 text-xs">
-                    <h3 class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">II. Hasil Analisis Studi Kasus (Penalaran Kritis)</h3>
+                    <h3
+                        class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">
+                        II. Hasil Analisis Studi Kasus (Penalaran Kritis)</h3>
                     <div class="space-y-2">
                         <div>
                             <p class="font-bold text-slate-700">Analisis Dampak Terburuk Terhadap Fisik & Akademis:</p>
-                            <p id="print-analisis-q1" class="bg-slate-50 p-2 rounded border border-slate-200 mt-1 italic text-slate-800 whitespace-pre-line">-</p>
+                            <p id="print-analisis-q1"
+                                class="bg-slate-50 p-2 rounded border border-slate-200 mt-1 italic text-slate-800 whitespace-pre-line">
+                                -</p>
                         </div>
                         <div>
                             <p class="font-bold text-slate-700">Kalimat Penolakan Asertif yang Dinyatakan:</p>
-                            <p id="print-analisis-q2" class="bg-slate-50 p-2 rounded border border-slate-200 mt-1 font-semibold text-indigo-900">"-"</p>
+                            <p id="print-analisis-q2"
+                                class="bg-slate-50 p-2 rounded border border-slate-200 mt-1 font-semibold text-indigo-900">
+                                "-"</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Konten Integrasi LK Komitmen Rencana Aksi -->
                 <div class="mb-6 space-y-3 text-xs">
-                    <h3 class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">III. Ikrar Deklarasi & Komitmen Rencana Aksi</h3>
-                    <div class="space-y-2 bg-amber-50/50 p-3 rounded-xl border border-amber-200 text-slate-850 leading-relaxed">
+                    <h3
+                        class="font-bold text-slate-800 border-b border-slate-300 pb-1 uppercase tracking-wider text-[11px]">
+                        III. Ikrar Deklarasi & Komitmen Rencana Aksi</h3>
+                    <div
+                        class="space-y-2 bg-amber-50/50 p-3 rounded-xl border border-amber-200 text-slate-850 leading-relaxed">
                         <p>
-                            Bahwa saya secara sadar penuh, berkomitmen mutlak untuk menggapai target jangka pendek saya di lingkungan sekolah SMAN 2 Ciamis, yaitu bertekad kuat mencapai: <strong id="print-komitmen-target" class="text-slate-955">-</strong>.
+                            Bahwa saya secara sadar penuh, berkomitmen mutlak untuk menggapai target jangka pendek saya
+                            di lingkungan sekolah SMAN 2 Ciamis, yaitu bertekad kuat mencapai: <strong
+                                id="print-komitmen-target" class="text-slate-955">-</strong>.
                         </p>
                         <p>
-                            Guna membentengi diri dari pengaruh buruk NAPZA, saya akan aktif menyalurkan bakat minat melalui wadah kreativitas ekstrakurikuler <strong id="print-komitmen-ekskul" class="underline text-blue-900">-</strong> serta didukung oleh jejaring sosial pelindung (*support system*) terdekat saya, yaitu <strong id="print-komitmen-support" class="text-slate-955">-</strong>.
+                            Guna membentengi diri dari pengaruh buruk NAPZA, saya akan aktif menyalurkan bakat minat
+                            melalui wadah kreativitas ekstrakurikuler <strong id="print-komitmen-ekskul"
+                                class="underline text-blue-900">-</strong> serta didukung oleh jejaring sosial pelindung
+                            (*support system*) terdekat saya, yaitu <strong id="print-komitmen-support"
+                                class="text-slate-955">-</strong>.
                         </p>
                         <p>
-                            Apabila saya mengalami kendala atau tekanan psikologis akademis di kemudian hari, saya berjanji akan menyalurkannya secara sehat melalui konsultasi langsung kepada <strong id="print-komitmen-consult" class="text-slate-955">-</strong>.
+                            Apabila saya mengalami kendala atau tekanan psikologis akademis di kemudian hari, saya
+                            berjanji akan menyalurkannya secara sehat melalui konsultasi langsung kepada <strong
+                                id="print-komitmen-consult" class="text-slate-955">-</strong>.
                         </p>
                     </div>
                 </div>
@@ -638,11 +874,12 @@
                     <div class="text-center w-5/12 flex flex-col items-center">
                         <p class="text-[10px] text-slate-500 mb-1" id="print-tanggal">Ciamis, 13 Juli 2026</p>
                         <p class="text-[10px] text-slate-500 mb-2">Murid yang membuat pernyataan,</p>
-                                <div class="h-20 w-full flex items-center justify-center overflow-hidden mb-1">
-                                    <img id="print-signature-img" src="" alt="Tanda Tangan Murid" class="max-h-full max-w-full hidden object-contain">
-                                </div>
-                                <p id="print-nama-bawah" class="font-bold text-slate-900 w-full truncate">-</p>
-                                <div id="print-nama-line" class="h-0.5 bg-slate-400 mt-2 w-24 mx-auto"></div>
+                        <div class="h-20 w-full flex items-center justify-center overflow-hidden mb-1">
+                            <img id="print-signature-img" src="" alt="Tanda Tangan Murid"
+                                class="max-h-full max-w-full hidden object-contain">
+                        </div>
+                        <p id="print-nama-bawah" class="font-bold text-slate-900 w-full truncate">-</p>
+                        <div id="print-nama-line" class="h-0.5 bg-slate-400 mt-2 w-24 mx-auto"></div>
                     </div>
                 </div>
             </div>
@@ -651,33 +888,47 @@
         <!-- ========================================== -->
         <!-- MODAL INTERAKTIF EDIT PROFIL PADA PAGE CETAK-->
         <!-- ========================================== -->
-        <div id="edit-profil-modal" class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0 no-print">
-            <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all scale-95 duration-300 flex flex-col">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-955">
-                    <h5 class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide">✏️ Perbaiki Identitas Murid</h5>
-                    <button onclick="closeEditProfilModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-base leading-none p-1 font-bold">✕</button>
+        <div id="edit-profil-modal"
+            class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0 no-print">
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all scale-95 duration-300 flex flex-col">
+                <div
+                    class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-955">
+                    <h5 class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide">✏️ Perbaiki Identitas
+                        Murid</h5>
+                    <button onclick="closeEditProfilModal()"
+                        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-base leading-none p-1 font-bold">✕</button>
                 </div>
-                <div id="edit-profil-banner" class="hidden px-4 py-2 text-sm rounded-b-md text-emerald-800 bg-emerald-50 border border-emerald-200">Identitas berhasil diperbarui.</div>
+                <div id="edit-profil-banner"
+                    class="hidden px-4 py-2 text-sm rounded-b-md text-emerald-800 bg-emerald-50 border border-emerald-200">
+                    Identitas berhasil diperbarui.</div>
                 <div class="p-5 text-xs space-y-4">
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Nama Lengkap Murid</label>
-                        <input type="text" id="edit-nama" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <input type="text" id="edit-nama"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                     </div>
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Jenis Kelamin</label>
-                        <select id="edit-jk" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <select id="edit-jk"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block font-semibold text-slate-700 dark:text-slate-300">Kelas / Kelompok</label>
-                        <input type="text" id="edit-kelompok" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                        <input type="text" id="edit-kelompok"
+                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
-                <div class="p-4 bg-slate-50 dark:bg-slate-955 border-t border-slate-100 dark:border-slate-850 flex justify-end gap-2">
-                    <button onclick="closeEditProfilModal()" class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium">Batal</button>
-                    <button onclick="saveEditProfil()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors">Simpan Perubahan</button>
+                <div
+                    class="p-4 bg-slate-50 dark:bg-slate-955 border-t border-slate-100 dark:border-slate-850 flex justify-end gap-2">
+                    <button onclick="closeEditProfilModal()"
+                        class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium">Batal</button>
+                    <button onclick="saveEditProfil()"
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors">Simpan
+                        Perubahan</button>
                 </div>
             </div>
         </div>
@@ -686,39 +937,57 @@
         <!-- HALAMAN REFLEKSI (UPDATED INTERACTIVE) -->
         <!-- ========================================== -->
         <section id="page-refleksi" class="hidden max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-            <div class="bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div
+                class="bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                <div
+                    class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]">
+                </div>
                 <div class="relative z-10 space-y-1">
-                    <span class="bg-white/20 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full tracking-wide uppercase">Evaluasi Diri Murid</span>
-                    <h2 class="text-xl font-extrabold tracking-tight">Refleksi Pembelajaran: Ayo Berpikir & Mencatat</h2>
+                    <span
+                        class="bg-white/20 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full tracking-wide uppercase">Evaluasi
+                        Diri Murid</span>
+                    <h2 class="text-xl font-extrabold tracking-tight">Refleksi Pembelajaran: Ayo Berpikir & Mencatat
+                    </h2>
                     <p class="text-xs text-pink-100 leading-relaxed">
-                        Isi refleksi sederhana berikut untuk menguatkan pemahamanmu dan mempersiapkan komitmen selama MPLS Ramah 2026.
+                        Isi refleksi sederhana berikut untuk menguatkan pemahamanmu dan mempersiapkan komitmen selama
+                        MPLS Pancawaluya 2026.
                     </p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-6">
+            <div
+                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-6">
                 <!-- Pertanyaan Refleksi 1 -->
                 <div class="space-y-2.5">
-                    <label class="block text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2 leading-relaxed">
-                        <span class="flex items-center justify-center w-5 h-5 bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-[10px] rounded-full font-bold flex-shrink-0 mt-0.5">1</span>
-                        <span>Apa tiga hal penting yang kamu pelajari tentang MPLS Ramah?</span>
+                    <label
+                        class="block text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2 leading-relaxed">
+                        <span
+                            class="flex items-center justify-center w-5 h-5 bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-[10px] rounded-full font-bold flex-shrink-0 mt-0.5">1</span>
+                        <span>Apa tiga hal penting yang kamu pelajari tentang MPLS Pancawaluya?</span>
                     </label>
-                    <textarea rows="4" placeholder="Ketik jawabanmu di sini (Misal: lingkungan inklusif, bahaya laten penyalahgunaan narkoba berdasarkan aspek hukum medis, pentingnya relasi sosial sehat, dll)..." class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-pink-500 font-medium placeholder-slate-400 shadow-inner leading-relaxed"></textarea>
+                    <textarea rows="4"
+                        placeholder="Ketik jawabanmu di sini (Misal: lingkungan inklusif, bahaya laten penyalahgunaan narkoba berdasarkan aspek hukum medis, pentingnya relasi sosial sehat, dll)..."
+                        class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-pink-500 font-medium placeholder-slate-400 shadow-inner leading-relaxed"></textarea>
                 </div>
 
                 <!-- Pertanyaan Refleksi 2 -->
                 <div class="space-y-2.5">
-                    <label class="block text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2 leading-relaxed">
-                        <span class="flex items-center justify-center w-5 h-5 bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-[10px] rounded-full font-bold flex-shrink-0 mt-0.5">2</span>
-                        <span>Bagaimana kamu akan menjaga lingkungan sekolah agar tetap ramah, inklusif, and bebas narkoba?</span>
+                    <label
+                        class="block text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2 leading-relaxed">
+                        <span
+                            class="flex items-center justify-center w-5 h-5 bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-[10px] rounded-full font-bold flex-shrink-0 mt-0.5">2</span>
+                        <span>Bagaimana kamu akan menjaga lingkungan sekolah agar tetap ramah, inklusif, and bebas
+                            narkoba?</span>
                     </label>
-                    <textarea rows="4" placeholder="Jelaskan rencana aksi nyatamu (Misal: menerapkan komunikasi asertif, aktif di ekstrakurikuler, melaporkan indikasi mencurigakan ke guru BK tanpa cemas, merangkul teman tanpa diskriminasi)..." class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-pink-500 font-medium placeholder-slate-400 shadow-inner leading-relaxed"></textarea>
+                    <textarea rows="4"
+                        placeholder="Jelaskan rencana aksi nyatamu (Misal: menerapkan komunikasi asertif, aktif di ekstrakurikuler, melaporkan indikasi mencurigakan ke guru BK tanpa cemas, merangkul teman tanpa diskriminasi)..."
+                        class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-pink-500 font-medium placeholder-slate-400 shadow-inner leading-relaxed"></textarea>
                 </div>
 
                 <!-- Tombol Submit / Simpan Refleksi -->
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-750 flex justify-end">
-                    <button onclick="alert('Refleksi pembelajaran berhasil disimpan ke sistem internal local e-modul!')" class="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow transition-all active:scale-95 flex items-center gap-1.5">
+                    <button onclick="alert('Refleksi pembelajaran berhasil disimpan ke sistem internal local e-modul!')"
+                        class="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow transition-all active:scale-95 flex items-center gap-1.5">
                         💾 Simpan Lembar Refleksi
                     </button>
                 </div>
@@ -729,67 +998,95 @@
         <!-- HALAMAN REFERENSI (UPDATED RELEVANT & KONTEKSTUAL) -->
         <!-- ========================================== -->
         <section id="page-referensi" class="hidden max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-            <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div
+                class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                <div
+                    class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]">
+                </div>
                 <div class="relative z-10 space-y-1">
-                    <span class="bg-white/20 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full tracking-wide uppercase">Daftar Pustaka Resmi</span>
+                    <span
+                        class="bg-white/20 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full tracking-wide uppercase">Daftar
+                        Pustaka Resmi</span>
                     <h2 class="text-xl font-extrabold tracking-tight">Halaman Referensi & Dokumen Acuan</h2>
                     <p class="text-xs text-amber-150 leading-relaxed">
-                        Kumpulan regulasi, literatur ilmiah, dan pedoman resmi nasional yang relevan dengan penyelenggaraan MPLS Ramah Anak & Kampanye P4GN 2026.
+                        Kumpulan regulasi, literatur ilmiah, dan pedoman resmi nasional yang relevan dengan
+                        penyelenggaraan MPLS Pancawaluya Anak & Kampanye P4GN 2026.
                     </p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-5">
-                <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider border-b border-slate-100 dark:border-slate-750 pb-2 flex items-center gap-2">
-                    🔖 Daftar Pustaka Kontekstual MPLS Ramah 2026 (Format APA)
+            <div
+                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-5">
+                <h3
+                    class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider border-b border-slate-100 dark:border-slate-750 pb-2 flex items-center gap-2">
+                    🔖 Daftar Pustaka Kontekstual MPLS Pancawaluya 2026 (Format APA)
                 </h3>
-                
+
                 <div class="space-y-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                     <!-- Referensi Permendikbud PPKSP -->
-                    <div class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
-                        Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. (2023). 
-                        <span class="italic">Peraturan Menteri Pendidikan, Kebudayaan, Riset, dan Teknologi Nomor 46 Tahun 2023 tentang Pencegahan dan Penanganan Kekerasan di Lingkungan Satuan Pendidikan (PPKSP)</span>. Jakarta: Kemendikbudristek.
+                    <div
+                        class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
+                        Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. (2023).
+                        <span class="italic">Peraturan Menteri Pendidikan, Kebudayaan, Riset, dan Teknologi Nomor 46
+                            Tahun 2023 tentang Pencegahan dan Penanganan Kekerasan di Lingkungan Satuan Pendidikan
+                            (PPKSP)</span>. Jakarta: Kemendikbudristek.
                     </div>
 
                     <!-- Referensi BNN P4GN -->
-                    <div class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
-                        Badan Narkotika Nasional Republik Indonesia. (2025). 
-                        <span class="italic">Panduan Nasional P4GN di Lingkungan Akademik Menengah: Penguatan Imunitas Remaja Fase E Terhadap Zat Psikoaktif Baru (New Psychoactive Substances)</span>. Jakarta: Deputi Bidang Pencegahan BNN RI.
+                    <div
+                        class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
+                        Badan Narkotika Nasional Republik Indonesia. (2025).
+                        <span class="italic">Panduan Nasional P4GN di Lingkungan Akademik Menengah: Penguatan Imunitas
+                            Remaja Fase E Terhadap Zat Psikoaktif Baru (New Psychoactive Substances)</span>. Jakarta:
+                        Deputi Bidang Pencegahan BNN RI.
                     </div>
 
                     <!-- Referensi UU Narkotika -->
-                    <div class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
-                        Republik Indonesia. (2009). 
-                        <span class="italic">Undang-Undang Republik Indonesia Nomor 35 Tahun 2009 tentang Narkotika</span>. Lembaran Negara RI Tahun 2009 Nomor 143. Jakarta: Sekretariat Negara.
+                    <div
+                        class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
+                        Republik Indonesia. (2009).
+                        <span class="italic">Undang-Undang Republik Indonesia Nomor 35 Tahun 2009 tentang
+                            Narkotika</span>. Lembaran Negara RI Tahun 2009 Nomor 143. Jakarta: Sekretariat Negara.
                     </div>
 
                     <!-- Referensi Psikologi Komunikasi Asertif -->
-                    <div class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
-                        Pratama, A. B., & Widiastuti, S. (2024). 
-                        Pengaruh Pelatihan Komunikasi Asertif Sebaya terhadap Efikasi Diri Penolakan Penyalahgunaan Napza pada Remaja Usia Transisi SMA. <span class="italic">Jurnal Psikologi Perkembangan Anak dan Remaja Indonesia</span>, 12(2), 89-104.
+                    <div
+                        class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
+                        Pratama, A. B., & Widiastuti, S. (2024).
+                        Pengaruh Pelatihan Komunikasi Asertif Sebaya terhadap Efikasi Diri Penolakan Penyalahgunaan
+                        Napza pada Remaja Usia Transisi SMA. <span class="italic">Jurnal Psikologi Perkembangan Anak dan
+                            Remaja Indonesia</span>, 12(2), 89-104.
                     </div>
 
                     <!-- Referensi Kemendikbud MPLS -->
-                    <div class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
-                        Direktorat Jenderal Pendidikan Anak Usia Dini, Pendidikan Dasar, dan Pendidikan Menengah. (2026). 
-                        <span class="italic">Panduan Teknis Pelaksanaan Masa Pengenalan Lingkungan Sekolah (MPLS) yang Menggembirakan, Inklusif, dan Bebas Napza</span>. Jakarta: Direktorat SMA Kemendikbudristek.
+                    <div
+                        class="apa-reference hover:bg-slate-50 dark:hover:bg-slate-900/40 p-2 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-750 transition-all">
+                        Direktorat Jenderal Pendidikan Anak Usia Dini, Pendidikan Dasar, dan Pendidikan Menengah.
+                        (2026).
+                        <span class="italic">Panduan Teknis Pelaksanaan Masa Pengenalan Lingkungan Sekolah (MPLS) yang
+                            Menggembirakan, Inklusif, dan Bebas Napza</span>. Jakarta: Direktorat SMA Kemendikbudristek.
                     </div>
                 </div>
 
                 <!-- Catatan Tambahan -->
-                <div class="bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 p-4 rounded-xl text-[11px] text-amber-800 dark:text-amber-400 font-medium leading-relaxed mt-4">
-                    📌 <strong>Catatan Edukatif:</strong> Seluruh referensi di atas merupakan dokumen resmi dan validitas ilmiah yang digunakan sebagai landasan perancangan kurikulum modul integrasi MPLS Ramah & Program Sekolah Bersinar (Bersih Narkoba) SMAN 2 Ciamis.
+                <div
+                    class="bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 p-4 rounded-xl text-[11px] text-amber-800 dark:text-amber-400 font-medium leading-relaxed mt-4">
+                    📌 <strong>Catatan Edukatif:</strong> Seluruh referensi di atas merupakan dokumen resmi dan
+                    validitas ilmiah yang digunakan sebagai landasan perancangan kurikulum modul integrasi MPLS
+                    Pancawaluya &
+                    Program Sekolah Bersinar (Bersih Narkoba) SMAN 2 Ciamis.
                 </div>
             </div>
         </section>
 
-        <footer class="bg-slate-100 dark:bg-slate-955 border-t border-slate-200 dark:border-slate-850 text-center py-4 text-[10px] text-slate-400 dark:text-slate-500 mt-auto no-print">
+        <footer
+            class="bg-slate-100 dark:bg-slate-955 border-t border-slate-200 dark:border-slate-850 text-center py-4 text-[10px] text-slate-400 dark:text-slate-500 mt-auto no-print">
             &copy; 2026 MPLS - SMAN 2 Ciamis
         </footer>
     </div>
 
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 px-2 py-2 flex justify-around items-center z-50 shadow-lg no-print">
+    <div
+        class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 px-2 py-2 flex justify-around items-center z-50 shadow-lg no-print">
         <button onclick="navigateTo('dashboard')" class="flex flex-col items-center gap-0.5 text-slate-400">
             <span class="text-base">📊</span><span class="text-[9px] font-medium">Dashboard</span>
         </button>
@@ -989,18 +1286,18 @@
             }
         }
 
-        window.changeSlide = function(direction) {
+        window.changeSlide = function (direction) {
             activeSlideIndex += direction;
             if (activeSlideIndex < 0) activeSlideIndex = 0;
             if (activeSlideIndex >= databaseSlides.length) activeSlideIndex = databaseSlides.length - 1;
             renderActiveSlide();
         }
 
-        window.changeYoutubeEmbed = function(url) {
+        window.changeYoutubeEmbed = function (url) {
             document.getElementById("youtube-iframe").src = url;
         }
 
-        window.checkAnswer = function(button, chosenAnswer, correctAnswer, explanation) {
+        window.checkAnswer = function (button, chosenAnswer, correctAnswer, explanation) {
             const container = button.parentElement.parentElement;
             const feedbackBox = container.querySelector(".feedback-box");
             const buttons = container.querySelectorAll("button");
@@ -1017,7 +1314,7 @@
             }
         }
 
-        window.openMateriModal = function() {
+        window.openMateriModal = function () {
             const slide = databaseSlides[activeSlideIndex];
             const modal = document.getElementById("materi-modal");
             document.getElementById("modal-header-title").innerText = slide.modalHeader;
@@ -1029,15 +1326,15 @@
             }, 10);
         }
 
-        window.closeMateriModal = function() {
+        window.closeMateriModal = function () {
             const modal = document.getElementById("materi-modal");
             modal.classList.add("opacity-0");
             modal.querySelector('.bg-white, .dark\\:bg-slate-900').classList.add("scale-95");
             setTimeout(() => { modal.classList.add("hidden"); }, 300);
         }
 
-        window.showDynamicTooltip = function(element, text, isClick = false) {
-            if (isMobileStickyTooltip && !isClick) return; 
+        window.showDynamicTooltip = function (element, text, isClick = false) {
+            if (isMobileStickyTooltip && !isClick) return;
             if (isClick) isMobileStickyTooltip = true;
             const tooltip = document.getElementById('dynamic-tooltip');
             const tooltipText = document.getElementById('tooltip-text');
@@ -1056,14 +1353,14 @@
             tooltip.style.top = `${topPos}px`;
         }
 
-        window.hideDynamicTooltip = function() {
+        window.hideDynamicTooltip = function () {
             if (isMobileStickyTooltip) return;
             const tooltip = document.getElementById('dynamic-tooltip');
             tooltip.style.opacity = '0';
             tooltip.classList.add('hidden');
         }
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const isClickInsideCard = e.target.closest('[onclick*="showDynamicTooltip"]');
             if (!isClickInsideCard && isMobileStickyTooltip) {
                 isMobileStickyTooltip = false;
@@ -1071,7 +1368,7 @@
             }
         });
 
-        window.checkKelompokLainnya = function(val) {
+        window.checkKelompokLainnya = function (val) {
             const manualContainer = document.getElementById('container-kelompok-manual');
             if (val === 'Lainnya') {
                 manualContainer.classList.remove('hidden');
@@ -1080,33 +1377,33 @@
             }
         }
 
-        window.navigateTo = function(pageName) {
+        window.navigateTo = function (pageName) {
             const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi'];
             pages.forEach(p => {
                 const targetPage = document.getElementById(`page-${p}`);
-                if(targetPage) targetPage.classList.add('hidden');
+                if (targetPage) targetPage.classList.add('hidden');
             });
 
             const currentPage = document.getElementById(`page-${pageName}`);
-            if(currentPage) currentPage.classList.remove('hidden');
+            if (currentPage) currentPage.classList.remove('hidden');
 
             const desktopHeader = document.getElementById('header-page-title');
             const mobileTitle = document.getElementById('mobile-page-title');
-            
+
             let displayTitle = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-            if(desktopHeader) desktopHeader.innerText = displayTitle;
-            if(mobileTitle) mobileTitle.innerText = displayTitle;
+            if (desktopHeader) desktopHeader.innerText = displayTitle;
+            if (mobileTitle) mobileTitle.innerText = displayTitle;
 
             updateSidebarStyles(pageName);
 
-            if(pageName === 'materi') {
+            if (pageName === 'materi') {
                 renderActiveSlide();
             } else if (pageName === 'asesmen') {
                 setTimeout(initSignatureCanvas, 100);
             } else if (pageName === 'cetak') {
                 syncDataToPrintTemplate();
             }
-            
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1114,7 +1411,7 @@
             const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi'];
             pages.forEach(p => {
                 const btn = document.getElementById(`nav-desk-${p}`);
-                if(!btn) return;
+                if (!btn) return;
                 if (p === activePage) {
                     btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-md transition-all";
                 } else {
@@ -1123,7 +1420,7 @@
             });
         }
 
-        window.saveAndScrollToKomitmen = function() {
+        window.saveAndScrollToKomitmen = function () {
             alert('Jawaban LK Analisis berhasil disimpan!');
             const target = document.getElementById('target-lk-komitmen');
             if (target) {
@@ -1131,12 +1428,20 @@
             }
         }
 
-        window.lockPortfolioAndRedirect = function() {
+        window.lockPortfolioAndRedirect = async function () {
             if (canvas) {
                 const dataURL = canvas.toDataURL();
                 document.getElementById('print-signature-img').src = dataURL;
                 document.getElementById('print-signature-img').classList.remove('hidden');
             }
+
+            // force sending to spreadsheet only when locking the portfolio
+            const success = await window.updateSpreadsheet({ silent: true, force: true });
+            if (!success) {
+                alert('Gagal mengirim data ke spreadsheet. Periksa koneksi atau endpoint Anda.');
+                return;
+            }
+
             alert('Portofolio berhasil dikunci! Mengalihkan ke Halaman Cetak.');
             navigateTo('cetak');
         }
@@ -1159,17 +1464,17 @@
             const kelompokSelect = document.getElementById('input-kelompok').value;
             const kelompokManual = document.getElementById('input-kelompok-manual').value;
             document.getElementById('print-kelompok').innerText = kelompokSelect === 'Lainnya' ? kelompokManual || '(Kelompok Manual Belum Diisi)' : kelompokSelect || '(Belum diisi)';
-            
+
             document.getElementById('print-analisis-q1').innerText = document.getElementById('lk-analisis-q1').value || '(Jawaban analisis kosong)';
             document.getElementById('print-analisis-q2').innerText = document.getElementById('lk-analisis-q2').value ? `"${document.getElementById('lk-analisis-q2').value}"` : '(Jawaban kalimat penolakan kosong)';
-            
+
             document.getElementById('print-komitmen-target').innerText = document.getElementById('lk-komitmen-target').value || '(Belum diisi)';
             document.getElementById('print-komitmen-support').innerText = document.getElementById('lk-komitmen-support').value || '(Belum diisi)';
             document.getElementById('print-komitmen-ekskul').innerText = document.getElementById('lk-komitmen-ekskul').value || '[Belum Memilih Wadah]';
             document.getElementById('print-komitmen-consult').innerText = document.getElementById('lk-komitmen-konsul').value || '(Belum Memilih Target Konsultasi)';
-            
+
             const inputTanggal = document.getElementById('lk-komitmen-tanggal').value;
-            if(inputTanggal) {
+            if (inputTanggal) {
                 const dateObj = new Date(inputTanggal);
                 const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
                 document.getElementById('print-tanggal').innerText = `Ciamis, ${dateObj.toLocaleDateString('id-ID', opsi)}`;
@@ -1177,17 +1482,17 @@
         }
 
         /* FUNGSI MODAL EDIT PROFIL PADA HALAMAN CETAK */
-        window.openEditProfilModal = function() {
+        window.openEditProfilModal = function () {
             const modal = document.getElementById('edit-profil-modal');
-            
+
             // Isi nilai modal dengan data terupdate dari input utama
             document.getElementById('edit-nama').value = document.getElementById('input-nama').value;
             document.getElementById('edit-jk').value = document.getElementById('input-jk').value || 'Laki-laki';
-            
+
             const kelompokSelect = document.getElementById('input-kelompok').value;
             const kelompokManual = document.getElementById('input-kelompok-manual').value;
             document.getElementById('edit-kelompok').value = kelompokSelect === 'Lainnya' ? kelompokManual : kelompokSelect;
-            
+
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
@@ -1195,33 +1500,33 @@
             }, 10);
         }
 
-        window.closeEditProfilModal = function() {
+        window.closeEditProfilModal = function () {
             const modal = document.getElementById('edit-profil-modal');
             modal.classList.add('opacity-0');
             modal.querySelector('.bg-white, .dark\\:bg-slate-900').classList.add('scale-95');
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        window.saveEditProfil = function() {
+        window.saveEditProfil = function () {
             const namaBaru = document.getElementById('edit-nama').value;
             const jkBaru = document.getElementById('edit-jk').value;
             const kelompokBaru = document.getElementById('edit-kelompok').value;
-            
+
             // Kembalikan & sinkronisasi ke form input utama di dashboard agar konsisten
             document.getElementById('input-nama').value = namaBaru;
             document.getElementById('input-jk').value = jkBaru;
-            
+
             // Logika pencocokan kelompok agar tidak merusak struktur dropdown awal
             const mainSelect = document.getElementById('input-kelompok');
             let matched = false;
-            for(let i=0; i<mainSelect.options.length; i++) {
-                if(mainSelect.options[i].value === kelompokBaru) {
+            for (let i = 0; i < mainSelect.options.length; i++) {
+                if (mainSelect.options[i].value === kelompokBaru) {
                     mainSelect.selectedIndex = i;
                     matched = true;
                     break;
                 }
             }
-            if(!matched && kelompokBaru) {
+            if (!matched && kelompokBaru) {
                 mainSelect.value = 'Lainnya';
                 document.getElementById('container-kelompok-manual').classList.remove('hidden');
                 document.getElementById('input-kelompok-manual').value = kelompokBaru;
@@ -1281,7 +1586,7 @@
                 });
                 canvas.addEventListener('pointerup', (e) => {
                     isDrawing = false;
-                    try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+                    try { canvas.releasePointerCapture(e.pointerId); } catch (err) { }
                 });
                 canvas.addEventListener('pointercancel', () => { isDrawing = false; });
             } else {
@@ -1330,7 +1635,7 @@
             isDrawing = false;
         }
 
-        window.clearSignatureCanvas = function() {
+        window.clearSignatureCanvas = function () {
             if (!canvas || !ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             document.getElementById('print-signature-img').src = "";
@@ -1349,59 +1654,113 @@
             const dd = String(today.getDate()).padStart(2, '0');
             dateInput.value = `${yyyy}-${mm}-${dd}`;
         }
-        
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
-            document.documentElement.classList.add('dark'); 
-            if(lightIcon) lightIcon.classList.remove('hidden'); 
-            if(darkIcon) darkIcon.classList.add('hidden');
-        } else { 
-            document.documentElement.classList.remove('dark'); 
-            if(darkIcon) darkIcon.classList.remove('hidden'); 
-            if(lightIcon) lightIcon.classList.add('hidden');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            if (lightIcon) lightIcon.classList.remove('hidden');
+            if (darkIcon) darkIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            if (darkIcon) darkIcon.classList.remove('hidden');
+            if (lightIcon) lightIcon.classList.add('hidden');
         }
-        
-        if(themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', function() { 
-                if(lightIcon) lightIcon.classList.toggle('hidden'); 
-                if(darkIcon) darkIcon.classList.toggle('hidden'); 
-                if (document.documentElement.classList.contains('dark')) { 
-                    document.documentElement.classList.remove('dark'); 
-                    localStorage.setItem('color-theme', 'light'); 
-                } else { 
-                    document.documentElement.classList.add('dark'); 
-                    localStorage.setItem('color-theme', 'dark'); 
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function () {
+                if (lightIcon) lightIcon.classList.toggle('hidden');
+                if (darkIcon) darkIcon.classList.toggle('hidden');
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
                 }
-                if(canvas) {
+                if (canvas) {
                     ctx.strokeStyle = document.documentElement.classList.contains('dark') ? '#60a5fa' : '#1d4ed8';
                 }
             });
         }
 
-        let sec = 0; setInterval(() => { sec++; let m = Math.floor(sec/60), s = sec%60; document.getElementById('spend-time-clock').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }, 1000);
+        let sec = 0; setInterval(() => { sec++; let m = Math.floor(sec / 60), s = sec % 60; document.getElementById('spend-time-clock').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`; }, 1000);
 
         /* --- Integrasi Google Sheets (read-only via public gviz endpoint) --- */
-        const SHEET_ID = '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
-        const SHEET_UPDATE_URL = 'https://script.google.com/macros/s/AKfycbzAWC-pku93kyWkj4HWhB8eeB2B6z7qahzyY3-nW7VESFw2khfeuklhoO5LbHmpzx3V/exec';
+        const SHEET_READ_ID = new URLSearchParams(window.location.search).get('sheetReadId') || new URLSearchParams(window.location.search).get('sheetId') || '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
+        const SHEET_WRITE_ID = new URLSearchParams(window.location.search).get('sheetWriteId') || '10k_Id3PKWHMmVdAsONCj2xlbuGtdK6S8pvrZZzmBmSc';
+        const SHEET_NAME = new URLSearchParams(window.location.search).get('sheetName') || 'Sheet1';
+        const SHEET_UPDATE_URL = getSheetEndpoint() || 'https://script.google.com/macros/s/AKfycbzAQBZxOPUlZ1s551g7H8h5oecvmxIfp4yOrf3vXCtW2L39cY3slSMBM9GiQkb4vBvp/exec';
+        const SHEET_UPDATE_ENABLED = true;
+        const BACKUP_SUBMISSION_KEY = 'mpls-last-submission';
 
         let sheetData = [];
+        let lastSubmittedPayload = null;
+
+        function arePayloadsEqual(a, b) {
+            if (!a || !b) return false;
+            return JSON.stringify(a) === JSON.stringify(b);
+        }
+
+        function getSheetEndpoint() {
+            const fromQuery = new URLSearchParams(window.location.search).get('sheetEndpoint');
+            if (fromQuery) {
+                try {
+                    localStorage.setItem('mpls-sheet-endpoint', fromQuery);
+                } catch (err) {
+                    console.warn('Gagal menyimpan endpoint di localStorage:', err);
+                }
+                return fromQuery;
+            }
+            return localStorage.getItem('mpls-sheet-endpoint') || '';
+        }
+
+        function normalizeText(value) {
+            return String(value ?? '').replace(/\s+/g, ' ').trim();
+        }
+
+        function saveSubmissionBackup(payload) {
+            try {
+                localStorage.setItem(BACKUP_SUBMISSION_KEY, JSON.stringify({
+                    ...payload,
+                    savedAt: new Date().toISOString()
+                }));
+            } catch (err) {
+                console.warn('Gagal menyimpan cadangan data:', err);
+            }
+        }
 
         async function fetchSheetData() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+                const sheetParam = SHEET_NAME ? `&sheet=${encodeURIComponent(SHEET_NAME)}` : '';
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_READ_ID}/gviz/tq?tqx=out:json${sheetParam}`;
                 const res = await fetch(url);
                 const text = await res.text();
                 const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
                 const json = JSON.parse(jsonText);
                 const rows = (json.table && json.table.rows) ? json.table.rows : [];
-                sheetData = rows.map(r => {
-                    const c = r.c || [];
-                    // Spreadsheet columns: [0]=No., [1]=Nama, [2]=Asal Sekolah, [3]=Jenis Kelamin, [4]=Kelompok
-                    return {
-                        name: c[1] && c[1].v ? String(c[1].v).trim() : '',
-                        jk: c[3] && c[3].v ? String(c[3].v).trim() : '',
-                        kelompok: c[4] && c[4].v ? String(c[4].v).trim() : ''
-                    };
-                }).filter(x => x.name);
+
+                if (rows.length <= 1) {
+                    sheetData = [];
+                    populateNamesList();
+                    populateKelompokOptions();
+                    showToast('Spreadsheet belum berisi data peserta. Isi baris data di sheet yang benar.', 'error');
+                    return;
+                }
+
+                const headerRow = (rows[0].c || []).map(cell => cell && cell.v ? String(cell.v).trim().toLowerCase() : '');
+                const nameIndex = headerRow.findIndex(label => ['nama', 'name'].includes(label));
+                const jkIndex = headerRow.findIndex(label => ['jenis_kelamin', 'jenis kelamin', 'gender', 'jk'].includes(label));
+                const kelompokIndex = headerRow.findIndex(label => ['kelompok', 'group', 'group name'].includes(label));
+
+                function getCellValue(row, index) {
+                    return row.c && row.c[index] && row.c[index].v ? String(row.c[index].v).trim() : '';
+                }
+
+                sheetData = rows.slice(1).map(r => ({
+                    name: nameIndex >= 0 ? getCellValue(r, nameIndex) : getCellValue(r, 1),
+                    jk: jkIndex >= 0 ? getCellValue(r, jkIndex) : getCellValue(r, 3),
+                    kelompok: kelompokIndex >= 0 ? getCellValue(r, kelompokIndex) : getCellValue(r, 4)
+                })).filter(x => x.name);
+
                 populateNamesList();
                 populateKelompokOptions();
             } catch (err) {
@@ -1449,10 +1808,16 @@
 
             nameInput.addEventListener('input', function (e) {
                 const v = e.target.value.trim();
-                if (!v) { hideNameSuggestions(); return; }
+                if (!v) {
+                    hideNameSuggestions();
+                    return;
+                }
                 showNameSuggestions(v);
+
                 const match = sheetData.find(s => s.name.toLowerCase() === v.toLowerCase());
-                if (match) applyMatchToFields(match);
+                if (match) {
+                    applyMatchToFields(match);
+                }
             });
 
             nameInput.addEventListener('focus', function () {
@@ -1493,34 +1858,45 @@
 
             function normalizeJK(raw) {
                 if (!raw) return '';
-                const r = raw.toString().toLowerCase();
-                if (r.indexOf('laki') !== -1 || r === 'l' ) return 'Laki-laki';
-                if (r.indexOf('perempuan') !== -1 || r === 'p') return 'Perempuan';
-                // fallback: capitalize first letter
-                return raw.charAt(0).toUpperCase() + raw.slice(1);
+                const r = String(raw).toLowerCase().trim();
+                if (r.includes('laki')) return 'Laki-laki';
+                if (r.includes('perempuan')) return 'Perempuan';
+                if (r === 'l' || r === 'lakilaki') return 'Laki-laki';
+                if (r === 'p' || r === 'perempuan') return 'Perempuan';
+                return '';
             }
 
             function applyMatchToFields(match) {
-                if (match.jk) {
-                    const jkVal = normalizeJK(match.jk);
-                    const jkSelect = document.getElementById('input-jk');
-                    // if option exists, set it; otherwise set value and leave select as-is
+                const jkSelect = document.getElementById('input-jk');
+                const jkVal = normalizeJK(match.jk);
+                if (jkSelect && jkVal) {
                     const opt = Array.from(jkSelect.options).find(o => o.value === jkVal);
-                    if (opt) jkSelect.value = jkVal; else jkSelect.value = jkVal;
+                    if (opt) {
+                        jkSelect.value = jkVal;
+                    }
                 }
-                if (match.kelompok) {
-                    const sel = document.getElementById('input-kelompok');
+
+                const sel = document.getElementById('input-kelompok');
+                if (sel && match.kelompok) {
                     let found = false;
                     for (let i = 0; i < sel.options.length; i++) {
-                        if (sel.options[i].value === match.kelompok) { sel.selectedIndex = i; found = true; break; }
+                        if (sel.options[i].value === match.kelompok) {
+                            sel.selectedIndex = i;
+                            found = true;
+                            break;
+                        }
                     }
                     if (!found) {
                         sel.value = 'Lainnya';
-                        document.getElementById('container-kelompok-manual').classList.remove('hidden');
-                        document.getElementById('input-kelompok-manual').value = match.kelompok;
+                        const manualContainer = document.getElementById('container-kelompok-manual');
+                        const manualInput = document.getElementById('input-kelompok-manual');
+                        if (manualContainer) manualContainer.classList.remove('hidden');
+                        if (manualInput) manualInput.value = match.kelompok;
                     } else {
-                        document.getElementById('container-kelompok-manual').classList.add('hidden');
-                        document.getElementById('input-kelompok-manual').value = '';
+                        const manualContainer = document.getElementById('container-kelompok-manual');
+                        const manualInput = document.getElementById('input-kelompok-manual');
+                        if (manualContainer) manualContainer.classList.add('hidden');
+                        if (manualInput) manualInput.value = '';
                     }
                 }
             }
@@ -1538,57 +1914,97 @@
         }
 
         function buildSpreadsheetPayload() {
-            const nama = document.getElementById('input-nama').value.trim();
-            const jenis_kelamin = document.getElementById('input-jk').value;
-            const kelompok = document.getElementById('input-kelompok').value === 'Lainnya' ? document.getElementById('input-kelompok-manual').value : document.getElementById('input-kelompok').value;
-            const dampak = document.getElementById('lk-analisis-q1') ? document.getElementById('lk-analisis-q1').value.trim() : '';
-            const penolakan = document.getElementById('lk-analisis-q2') ? document.getElementById('lk-analisis-q2').value.trim() : '';
-            const target = document.getElementById('lk-komitmen-target') ? document.getElementById('lk-komitmen-target').value.trim() : '';
-            const support_system = document.getElementById('lk-komitmen-support') ? document.getElementById('lk-komitmen-support').value.trim() : '';
-            const ekskul = document.getElementById('lk-komitmen-ekskul') ? document.getElementById('lk-komitmen-ekskul').value : '';
-            const konsultasi = document.getElementById('lk-komitmen-konsul') ? document.getElementById('lk-komitmen-konsul').value : '';
-            const tanggal = document.getElementById('lk-komitmen-tanggal') ? document.getElementById('lk-komitmen-tanggal').value : '';
-            const screentime = document.getElementById('spend-time-clock') ? document.getElementById('spend-time-clock').innerText : '';
+            const nama = normalizeText(document.getElementById('input-nama')?.value);
+            const jenis_kelamin = normalizeText(document.getElementById('input-jk')?.value);
+            const kelompok = normalizeText(document.getElementById('input-kelompok')?.value === 'Lainnya' ? document.getElementById('input-kelompok-manual')?.value : document.getElementById('input-kelompok')?.value);
+            const dampak = normalizeText(document.getElementById('lk-analisis-q1')?.value);
+            const penolakan = normalizeText(document.getElementById('lk-analisis-q2')?.value);
+            const target = normalizeText(document.getElementById('lk-komitmen-target')?.value);
+            const support_system = normalizeText(document.getElementById('lk-komitmen-support')?.value);
+            const ekskul = normalizeText(document.getElementById('lk-komitmen-ekskul')?.value);
+            const konsultasi = normalizeText(document.getElementById('lk-komitmen-konsul')?.value);
+            const tanggal = normalizeText(document.getElementById('lk-komitmen-tanggal')?.value);
+            const screentime = normalizeText(document.getElementById('spend-time-clock')?.innerText);
 
-            return { nama, jenis_kelamin, kelompok, dampak, penolakan, target, support_system, ekskul, konsultasi, tanggal, screentime, source: 'mpls-form' };
+            return {
+                nama,
+                jenis_kelamin,
+                kelompok,
+                dampak,
+                penolakan,
+                target,
+                support_system,
+                ekskul,
+                konsultasi,
+                tanggal,
+                screentime,
+                submitted_at: new Date().toISOString(),
+                source: 'mpls-form'
+            };
         }
 
         async function sendSpreadsheetPayload(payload) {
-            if (!SHEET_UPDATE_URL) {
+            if (!SHEET_UPDATE_ENABLED || !SHEET_UPDATE_URL) {
                 throw new Error('Endpoint spreadsheet belum tersedia.');
             }
 
-            const iframeName = 'sheet-submit-frame';
-            let iframe = document.getElementById(iframeName);
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.name = iframeName;
-                iframe.id = iframeName;
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-            }
+            const payloadForSend = {
+                ...payload,
+                sheet_id: SHEET_WRITE_ID,
+                sheet_name: SHEET_NAME,
+                submitted_at: payload.submitted_at || new Date().toISOString()
+            };
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = SHEET_UPDATE_URL;
-            form.target = iframeName;
-            form.style.display = 'none';
-
-            Object.entries(payload).forEach(([key, value]) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = String(value ?? '');
-                form.appendChild(input);
+            const formData = new URLSearchParams();
+            Object.entries(payloadForSend).forEach(([key, value]) => {
+                formData.append(key, String(value ?? ''));
             });
 
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => {
-                if (form.parentNode) form.parentNode.removeChild(form);
-            }, 1000);
+            const payloadString = formData.toString();
 
-            return { status: 'success', mode: 'iframe-submit' };
+            try {
+                // Gunakan fetch dengan mode 'no-cors' agar tidak terblokir saat dikirim dari localhost
+                await fetch(SHEET_UPDATE_URL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+                    keepalive: true
+                });
+                return { status: 'success', mode: 'fetch-post' };
+            } catch (err) {
+                const iframeName = 'sheet-submit-frame';
+                let iframe = document.getElementById(iframeName);
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.name = iframeName;
+                    iframe.id = iframeName;
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = SHEET_UPDATE_URL;
+                form.target = iframeName;
+                form.style.display = 'none';
+
+                Object.entries(payloadForSend).forEach(([key, value]) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = String(value ?? '');
+                    form.appendChild(input);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+
+                setTimeout(() => {
+                    if (form.parentNode) form.parentNode.removeChild(form);
+                }, 1000);
+
+                return { status: 'success', mode: 'iframe-post' };
+            }
         }
 
         let autosaveTimer = null;
@@ -1607,36 +2023,59 @@
         ];
 
         function scheduleAutoSave() {
-            const name = document.getElementById('input-nama')?.value.trim();
-            if (!name) return;
-            clearTimeout(autosaveTimer);
-            autosaveTimer = setTimeout(() => {
-                window.updateSpreadsheet({ silent: true });
-            }, 1200);
+            const payload = buildSpreadsheetPayload();
+            const nama = normalizeText(payload.nama);
+            if (!nama) return;
+            saveSubmissionBackup(payload);
         }
 
-        window.updateSpreadsheet = function(options = {}) {
-            const { silent = false } = options;
+        autosaveFieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => {
+                    if (autosaveTimer) clearTimeout(autosaveTimer);
+                    autosaveTimer = setTimeout(() => {
+                        scheduleAutoSave();
+                    }, 800);
+                });
+            }
+        });
+
+        window.updateSpreadsheet = function (options = {}) {
+            const { silent = false, force = false } = options;
             const payload = buildSpreadsheetPayload();
-            const namaRaw = payload.nama || '';
-            const nama = String(namaRaw).trim();
+            const nama = normalizeText(payload.nama);
             if (!nama) {
                 if (!silent) {
-                    console.warn('Nama input saat updateSpreadsheet kosong atau hanya berisi spasi:', JSON.stringify(namaRaw));
+                    console.warn('Nama input saat updateSpreadsheet kosong atau hanya berisi spasi:', JSON.stringify(payload.nama));
                     showToast('Mohon isi Nama sebelum melakukan update.', 'error');
                 }
                 return Promise.resolve(false);
             }
 
-            if (!SHEET_UPDATE_URL) {
-                if (!silent) showToast('Fitur update otomatis memerlukan Google Apps Script endpoint. Silakan set SHEET_UPDATE_URL di skrip atau ikuti instruksi README.', 'error');
+            // always keep a local backup
+            saveSubmissionBackup(payload);
+
+            // do not send to spreadsheet unless explicitly forced (e.g. lock action)
+            if (!force) {
+                lastSubmittedPayload = payload;
+                if (!silent) showToast('Data disimpan secara lokal. Tekan "Kunci Portfolio" untuk kirim ke rekap.', 'success');
+                return Promise.resolve(true);
+            }
+
+            if (!SHEET_UPDATE_ENABLED) {
+                if (!silent) showToast('Rekap spreadsheet dinonaktifkan.', 'error');
                 return Promise.resolve(false);
             }
 
+            // only now perform the network send
             return sendSpreadsheetPayload(payload)
                 .then(res => {
-                    if (res && (res.status === 'success' || res.mode === 'no-cors')) {
-                        if (!silent) showToast('Sinkronisasi data ke spreadsheet berhasil diupdate!', 'success');
+                    if (res && res.status === 'success') {
+                        lastSubmittedPayload = payload;
+                        if (!silent) {
+                            showToast('Permintaan kirim data ke spreadsheet telah dikirim. Silakan tunggu beberapa saat lalu cek kembali.', 'success');
+                        }
                         fetchSheetData();
                         return true;
                     }
@@ -1649,24 +2088,6 @@
                     return false;
                 });
         }
-
-        document.addEventListener('input', (event) => {
-            if (autosaveFieldIds.includes(event.target?.id)) {
-                scheduleAutoSave();
-            }
-        });
-
-        document.addEventListener('change', (event) => {
-            if (autosaveFieldIds.includes(event.target?.id)) {
-                scheduleAutoSave();
-            }
-        });
-
-        setTimeout(() => {
-            if (document.getElementById('input-nama')?.value.trim()) {
-                scheduleAutoSave();
-            }
-        }, 1000);
 
         const originalTitle = document.title;
 
@@ -1681,12 +2102,19 @@
         }
 
         function getPrintableDocumentTitle() {
-            const nama = document.getElementById('input-nama').value.trim();
+            // prefer the synced print name (used in the template), fallback to input value
+            var printNameEl = document.getElementById('print-nama');
+            var nama = '';
+            if (printNameEl && printNameEl.innerText && printNameEl.innerText.trim() !== '-') {
+                nama = printNameEl.innerText.trim();
+            } else {
+                nama = (document.getElementById('input-nama')?.value || '').trim();
+            }
             const safeName = sanitizePrintTitle(nama);
             return `${safeName} - Portofolio MPLS`;
         }
 
-        window.prepareAndPrint = function() {
+        window.prepareAndPrint = function () {
             // ensure data is updated on print template
             syncDataToPrintTemplate();
 
@@ -1712,4 +2140,5 @@
         navigateTo('dashboard');
     </script>
 </body>
+
 </html>
