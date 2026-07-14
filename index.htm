@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        #canvas-signature { touch-action: none; }
         .apa-reference { padding-left: 2rem; text-indent: -2rem; }
         
         /* Gaya Ornamen Bingkai Emas Formal untuk Deklarasi */
@@ -35,9 +36,36 @@
         .bottom-right { bottom: 6px; right: 6px; border-left: none; border-top: none; }
         
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+
+            html, body {
+                height: auto !important;
+                overflow: visible !important;
+                background: #fff !important;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
             body * { visibility: hidden; }
             #page-cetak, #page-cetak * { visibility: visible; }
-            #page-cetak { position: absolute; left: 0; top: 0; width: 100%; }
+            #page-cetak {
+                position: static !important;
+                left: auto !important;
+                top: auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto;
+                padding: 0;
+                overflow: visible !important;
+                box-shadow: none !important;
+            }
+            #page-cetak > * { page-break-inside: auto; }
             .no-print { display: none !important; }
         }
     </style>
@@ -485,7 +513,7 @@
                         <label class="block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase flex items-center gap-1">
                             📅 TANGGAL INPUT KOMITMEN
                         </label>
-                        <input type="date" id="lk-komitmen-tanggal" value="2026-07-13" class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-semibold shadow-inner">
+                        <input type="date" id="lk-komitmen-tanggal" class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-semibold shadow-inner">
                     </div>
 
                     <!-- Input 4: Tanda Tangan Digital Murid -->
@@ -787,7 +815,7 @@
             {
                 judul: "01. Membuka Gerbang Potensi",
                 deskripsi: "Memasuki jenjang SMA (Fase E) berarti kalian memegang kendali penuh atas masa depan. SMAN 2 Ciamis menyambut kalian di ekosistem belajar yang sehat, seru, suportif, dan bebas dari bayang-bayang pengaruh buruk zat adiktif.",
-                image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop&q=80",
                 badge: "Tujuan: Memperkuat imunitas",
                 modalHeader: "💡 Fun Fact: Mengapa disebut Fase E?",
                 modalContent: `
@@ -799,7 +827,7 @@
             {
                 judul: "02. Bedah Fakta Medis & Yuridis NAPZA",
                 deskripsi: "NAPZA adalah singkatan dari Narkotika, Psikotropika, dan Zat Adiktif. Klasifikasi ketiga golongan ini diatur secara ketat berdasarkan hukum positif Negara Republik Indonesia untuk melindungi masa depan generasi bangsa.",
-                image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&auto=format&fit=crop&q=80",
                 badge: "Klinis & Hukum: Tinjauan yuridis komparatif berdasarkan Undang-Undang RI.",
                 modalHeader: "⚖️ Perspektif Hukum: Ragam & Golongan NAPZA di Indonesia",
                 modalContent: `
@@ -870,7 +898,7 @@
             {
                 judul: "03. Sistem Saraf Pusat di Bawah Ancaman",
                 deskripsi: "Zat adiktif menyerang organ otak secara instan dengan merusak jalur pelepasan dopamin. Efek buruknya meliputi penurunan kecerdasan intelektual secara drastis, halusinasi parah, cemas ekstrem, hingga memicu kerusakan saraf permanen.",
-                image: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&auto=format&fit=crop&q=80",
                 badge: "Sains: Kerusakan permanen pada sistem neurotransmiter otak.",
                 modalHeader: "🧠 Inside Your Brain: Bagaimana Napza Membajak Otakmu?",
                 modalContent: `
@@ -887,7 +915,7 @@
             {
                 judul: "04. Sanksi Hukum & Drop Out",
                 deskripsi: "Konsekuensi penyalahgunaan zat bukan cuma soal kesehatan hancur. Secara hukum, pelakunya diancam pidana penjara bertahun-tahun, rekam jejak kriminal cacat di kepolisian (SKCK rusak), hingga sanksi pemutusan hak belajar dari sekolah.",
-                image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=600&auto=format&fit=crop&q=80",
                 badge: "Aspek Legal: Kehilangan reputasi, sanksi penjara, and hancurnya masa depan.",
                 modalHeader: "⚖️ Realitas Pahit: Jeratan Hukum UU No.35/2009",
                 modalContent: `
@@ -902,7 +930,7 @@
             {
                 judul: "05. Trik Jitu Ngomong Asertif",
                 deskripsi: "Menolak ajakan negatif adalah sebuah skill kepemimpinan yang keren. Terapkan sikap asertif: tatap matanya, katakan penolakan secara mantap dengan intonasi percaya diri, lalu langsung alihkan ke topik positif lain.",
-                image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop&q=80",
                 badge: 'Life Skill: Berani menolak ajakan negatif adalah bukti karakter unggul.',
                 modalHeader: "🛡️ TIPS Jitu Kata-Kata Asertif yang bisa Kamu Contoh",
                 modalContent: `
@@ -920,7 +948,7 @@
             {
                 judul: "06. Aktivasi Sinergi Ekskul Smandacis",
                 deskripsi: "Salurkan bakat dan energi mudamu ke wadah ekstrakurikuler resmi sekolah. Gerakan pencegahan ini didukung penuh oleh seluruh warga sekolah demi menjaga ekosistem sekolah ramah.",
-                image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80",
+                image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&auto=format&fit=crop&q=80",
                 badge: "Solusi Bersama: Kolaborasi total seluruh warga sekolah dalam P4GN.",
                 modalHeader: "🤝 Kolaborasi Total SMAN 2 Ciamis",
                 modalContent: `
@@ -939,10 +967,16 @@
 
         function renderActiveSlide() {
             const slide = databaseSlides[activeSlideIndex];
+            const slideImage = document.getElementById("slide-image");
             document.getElementById("slide-number-indicator").innerText = activeSlideIndex + 1;
             document.getElementById("slide-title").innerText = slide.judul;
             document.getElementById("slide-description").innerText = slide.deskripsi;
-            document.getElementById("slide-image").src = slide.image;
+            slideImage.onerror = null;
+            slideImage.src = slide.image;
+            slideImage.onerror = function () {
+                this.onerror = null;
+                this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'%3E%3Crect width='1200' height='800' fill='%230f172a'/%3E%3Ccircle cx='600' cy='320' r='170' fill='%233b82f6'/%3E%3Cpath d='M430 560c80-80 260-80 340 0' stroke='%23ffffff' stroke-width='24' stroke-linecap='round'/%3E%3Ctext x='600' y='690' text-anchor='middle' font-family='Arial, sans-serif' font-size='46' fill='%23ffffff'%3EVisual Materi P4GN%3C/text%3E%3C/svg%3E";
+            };
             document.getElementById("slide-badge-text").innerText = slide.badge;
             document.getElementById("btn-slide-prev").disabled = (activeSlideIndex === 0);
             document.getElementById("btn-slide-next").disabled = (activeSlideIndex === databaseSlides.length - 1);
@@ -1257,9 +1291,24 @@
                 canvas.addEventListener('mouseup', stopDrawing);
                 canvas.addEventListener('mouseleave', stopDrawing);
 
-                canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const t = e.touches[0]; startDrawing({ clientX: t.clientX, clientY: t.clientY }); }, { passive: false });
-                canvas.addEventListener('touchmove', (e) => { e.preventDefault(); const t = e.touches[0]; draw({ clientX: t.clientX, clientY: t.clientY }); }, { passive: false });
-                canvas.addEventListener('touchend', (e) => { e.preventDefault(); stopDrawing(); }, { passive: false });
+                const handleTouchStart = (e) => {
+                    e.preventDefault();
+                    const t = e.touches[0];
+                    startDrawing({ clientX: t.clientX, clientY: t.clientY });
+                };
+                const handleTouchMove = (e) => {
+                    e.preventDefault();
+                    const t = e.touches[0];
+                    draw({ clientX: t.clientX, clientY: t.clientY });
+                };
+                const handleTouchEnd = (e) => {
+                    e.preventDefault();
+                    stopDrawing();
+                };
+
+                canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+                canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+                canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
             }
         }
 
@@ -1291,6 +1340,15 @@
         const themeToggleBtn = document.getElementById('theme-toggle');
         const darkIcon = document.getElementById('theme-toggle-dark-icon');
         const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const dateInput = document.getElementById('lk-komitmen-tanggal');
+
+        if (dateInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
         
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
             document.documentElement.classList.add('dark'); 
@@ -1500,25 +1558,41 @@
         }
 
         const originalTitle = document.title;
+
+        function sanitizePrintTitle(value) {
+            return String(value || 'Portofolio')
+                .normalize('NFKD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9\s-]/g, '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .slice(0, 60) || 'Portofolio';
+        }
+
+        function getPrintableDocumentTitle() {
+            const nama = document.getElementById('input-nama').value.trim();
+            const safeName = sanitizePrintTitle(nama);
+            return `${safeName} - Portofolio MPLS`;
+        }
+
         window.prepareAndPrint = function() {
             // ensure data is updated on print template
             syncDataToPrintTemplate();
-            
-            // set dynamic name for print save format
-            const nama = document.getElementById('input-nama').value.trim();
-            if (nama) {
-                document.title = `${nama} - Portofolio MPLS`;
-            } else {
-                document.title = 'Portofolio MPLS';
-            }
-            
-            // trigger printing process directly
-            window.print();
+
+            const printableTitle = getPrintableDocumentTitle();
+            document.title = printableTitle;
+            document.documentElement.setAttribute('data-print-title', printableTitle);
+
+            // slight delay helps mobile browsers apply the title before opening print UI
+            setTimeout(() => {
+                window.print();
+            }, 250);
         }
 
         // restore title after print prompt finishes
         window.addEventListener('afterprint', () => {
             document.title = originalTitle;
+            document.documentElement.removeAttribute('data-print-title');
         });
 
         // inisialisasi data dan slide
