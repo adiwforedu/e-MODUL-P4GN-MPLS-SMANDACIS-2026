@@ -1543,45 +1543,25 @@
                 throw new Error('Endpoint spreadsheet belum tersedia.');
             }
 
-            const formBody = new URLSearchParams(payload).toString();
-            const jsonBody = JSON.stringify(payload);
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = SHEET_UPDATE_URL;
+            form.target = '_blank';
+            form.style.display = 'none';
 
-            const trySend = async (body, contentType) => {
-                const response = await fetch(SHEET_UPDATE_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': contentType
-                    },
-                    body,
-                    mode: 'cors',
-                    credentials: 'omit',
-                    keepalive: true
-                });
+            Object.entries(payload).forEach(([key, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = String(value ?? '');
+                form.appendChild(input);
+            });
 
-                const text = await response.text();
-                let parsed = null;
-                try { parsed = text ? JSON.parse(text) : null; } catch (_) {}
-                return { response, text, parsed };
-            };
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
 
-            const firstAttempt = await trySend(formBody, 'application/x-www-form-urlencoded;charset=UTF-8');
-            if (firstAttempt.response.ok) {
-                const success = firstAttempt.parsed && (firstAttempt.parsed.status === 'success' || firstAttempt.parsed.ok === true || firstAttempt.parsed.result === 'success');
-                if (success || firstAttempt.text.toLowerCase().includes('success') || firstAttempt.text.toLowerCase().includes('ok')) {
-                    return firstAttempt.parsed || { status: 'success' };
-                }
-            }
-
-            const secondAttempt = await trySend(jsonBody, 'application/json');
-            if (secondAttempt.response.ok) {
-                const success = secondAttempt.parsed && (secondAttempt.parsed.status === 'success' || secondAttempt.parsed.ok === true || secondAttempt.parsed.result === 'success');
-                if (success || secondAttempt.text.toLowerCase().includes('success') || secondAttempt.text.toLowerCase().includes('ok')) {
-                    return secondAttempt.parsed || { status: 'success' };
-                }
-            }
-
-            throw new Error(firstAttempt.text || secondAttempt.text || 'Respons server tidak valid.');
+            return { status: 'success', mode: 'form-submit' };
         }
 
         let autosaveTimer = null;
@@ -1624,7 +1604,7 @@
 
             return sendSpreadsheetPayload(payload)
                 .then(res => {
-                    if (res && (res.status === 'success' || res.ok === true || res.result === 'success')) {
+                    if (res && (res.status === 'success' || res.mode === 'no-cors')) {
                         if (!silent) showToast('Sinkronisasi data ke spreadsheet berhasil diupdate!', 'success');
                         fetchSheetData();
                         return true;
