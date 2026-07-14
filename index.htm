@@ -82,7 +82,7 @@
 
     <div class="flex-grow md:pl-64 flex flex-col min-h-screen pb-20 md:pb-0">
         
-        <nav class="bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 px-6 py-4 flex justify-between items-center shadow-sm">
+        <nav class="bg-slate-100 dark:bg-slate-955 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 px-6 py-4 flex justify-between items-center shadow-sm">
             <div class="flex items-center gap-3 md:hidden">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-base">M</div>
                 <h1 class="font-bold text-base text-slate-900 dark:text-white tracking-tight" id="mobile-page-title">Dashboard</h1>
@@ -93,7 +93,7 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <div id="time-tracker" class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 px-2.5 py-1 rounded-lg">
+                <div id="time-tracker" class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 px-2.5 py-1 rounded-lg">
                     <span class="text-xs font-bold text-amber-800 dark:text-amber-300 font-mono">⏱️ <span id="spend-time-clock">00:00</span></span>
                 </div>
                 <button id="theme-toggle" class="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm">
@@ -370,7 +370,7 @@
             </div>
         </section>
 
-        <div id="materi-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+        <div id="materi-modal" class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
             <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all scale-95 duration-300 max-h-[90vh] flex flex-col">
                 <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-955">
                     <h5 id="modal-header-title" class="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide pr-4"></h5>
@@ -683,7 +683,7 @@
                 <div class="space-y-2.5">
                     <label class="block text-xs font-bold text-slate-900 dark:text-white flex items-start gap-2 leading-relaxed">
                         <span class="flex items-center justify-center w-5 h-5 bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-[10px] rounded-full font-bold flex-shrink-0 mt-0.5">2</span>
-                        <span>Bagaimana kamu akan menjaga lingkungan sekolah agar tetap ramah, inklusif, dan bebas narkoba?</span>
+                        <span>Bagaimana kamu akan menjaga lingkungan sekolah agar tetap ramah, inklusif, and bebas narkoba?</span>
                     </label>
                     <textarea rows="4" placeholder="Jelaskan rencana aksi nyatamu (Misal: menerapkan komunikasi asertif, aktif di ekstrakurikuler, melaporkan indikasi mencurigakan ke guru BK tanpa cemas, merangkul teman tanpa diskriminasi)..." class="w-full px-3 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-pink-500 font-medium placeholder-slate-400 shadow-inner leading-relaxed"></textarea>
                 </div>
@@ -817,7 +817,7 @@
                             <tbody class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                                     <td class="p-3">
-                                        <span class="inline-block bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 text-[9px] font-bold px-2 py-0.5 rounded-md mb-1 border border-blue-200/50">UU RI No. 35 Tahun 2009</span>
+                                        <span class="inline-block bg-blue-50 text-blue-600 dark:bg-blue-955/50 dark:text-blue-400 text-[9px] font-bold px-2 py-0.5 rounded-md mb-1 border border-blue-200/50">UU RI No. 35 Tahun 2009</span>
                                         <div class="font-bold text-slate-900 dark:text-white text-xs">NARKOTIKA</div>
                                     </td>
                                     <td class="p-3 align-top leading-normal">Zat atau obat yang berasal dari tanaman maupun bukan tanaman, baik sintetis maupun semisintetis, yang dapat menyebabkan penurunan atau perubahan kesadaran, hilangnya rasa, mengurangi sampai menghilangkan rasa nyeri, dan dapat menimbulkan ketergantungan.</td>
@@ -1499,19 +1499,27 @@
                 .catch(err => { console.error(err); showToast('Gagal mengupdate spreadsheet: ' + (err.message || err), 'error'); });
         }
 
-        function prepareAndPrint() {
-            // ensure cetak page is visible
-            navigateTo('cetak');
-            // wait for render then sync and print
-            setTimeout(() => {
-                syncDataToPrintTemplate();
-                const nama = document.getElementById('input-nama').value.trim();
-                if (nama) document.title = `${nama} - Portofolio MPLS`;
-                else document.title = 'Portofolio MPLS';
-                window.focus();
-                setTimeout(() => window.print(), 400);
-            }, 180);
+        const originalTitle = document.title;
+        window.prepareAndPrint = function() {
+            // ensure data is updated on print template
+            syncDataToPrintTemplate();
+            
+            // set dynamic name for print save format
+            const nama = document.getElementById('input-nama').value.trim();
+            if (nama) {
+                document.title = `${nama} - Portofolio MPLS`;
+            } else {
+                document.title = 'Portofolio MPLS';
+            }
+            
+            // trigger printing process directly
+            window.print();
         }
+
+        // restore title after print prompt finishes
+        window.addEventListener('afterprint', () => {
+            document.title = originalTitle;
+        });
 
         // inisialisasi data dan slide
         fetchSheetData();
