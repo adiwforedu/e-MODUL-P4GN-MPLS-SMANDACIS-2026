@@ -1417,14 +1417,29 @@
         function populateKelompokOptions() {
             const sel = document.getElementById('input-kelompok');
             if (!sel) return;
-            const existingLain = Array.from(sel.options).find(o => o.value === 'Lainnya');
+            const currentValue = sel.value;
+            const manualValue = document.getElementById('input-kelompok-manual') ? document.getElementById('input-kelompok-manual').value : '';
+            const wasManual = currentValue === 'Lainnya';
+
             sel.innerHTML = '<option value="">-- Pilih Kelompok --</option>';
             const set = new Set();
             sheetData.forEach(s => { if (s.kelompok) set.add(s.kelompok); });
             Array.from(set).forEach(k => {
                 const o = document.createElement('option'); o.value = k; o.text = k; sel.appendChild(o);
             });
+
             const lainOpt = document.createElement('option'); lainOpt.value = 'Lainnya'; lainOpt.text = 'Lainnya (Ketik Manual)'; sel.appendChild(lainOpt);
+
+            if (currentValue) {
+                const hasCurrent = Array.from(sel.options).some(o => o.value === currentValue);
+                if (hasCurrent) {
+                    sel.value = currentValue;
+                } else if (wasManual && manualValue) {
+                    sel.value = 'Lainnya';
+                    document.getElementById('container-kelompok-manual').classList.remove('hidden');
+                    document.getElementById('input-kelompok-manual').value = manualValue;
+                }
+            }
         }
 
         (function attachAutoFill() {
@@ -1603,9 +1618,13 @@
         window.updateSpreadsheet = function(options = {}) {
             const { silent = false } = options;
             const payload = buildSpreadsheetPayload();
-            const nama = payload.nama;
+            const namaRaw = payload.nama || '';
+            const nama = String(namaRaw).trim();
             if (!nama) {
-                if (!silent) showToast('Mohon isi Nama sebelum melakukan update.', 'error');
+                if (!silent) {
+                    console.warn('Nama input saat updateSpreadsheet kosong atau hanya berisi spasi:', JSON.stringify(namaRaw));
+                    showToast('Mohon isi Nama sebelum melakukan update.', 'error');
+                }
                 return Promise.resolve(false);
             }
 
