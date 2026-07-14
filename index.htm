@@ -1381,7 +1381,7 @@
 
         /* --- Integrasi Google Sheets (read-only via public gviz endpoint) --- */
         const SHEET_ID = '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
-        const SHEET_UPDATE_URL = ''; // <-- Optional: set to your Google Apps Script web app URL to enable updates
+        const SHEET_UPDATE_URL = 'https://script.google.com/macros/s/AKfycbzAWC-pku93kyWkj4HWhB8eeB2B6z7qahzyY3-nW7VESFw2khfeuklhoO5LbHmpzx3V/exec';
 
         let sheetData = [];
 
@@ -1522,9 +1522,8 @@
             setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, duration);
         }
 
-        function updateSpreadsheet() {
+        function buildSpreadsheetPayload() {
             const nama = document.getElementById('input-nama').value.trim();
-            if (!nama) return showToast('Mohon isi Nama sebelum melakukan update.', 'error');
             const jenis_kelamin = document.getElementById('input-jk').value;
             const kelompok = document.getElementById('input-kelompok').value === 'Lainnya' ? document.getElementById('input-kelompok-manual').value : document.getElementById('input-kelompok').value;
             const dampak = document.getElementById('lk-analisis-q1') ? document.getElementById('lk-analisis-q1').value.trim() : '';
@@ -1536,26 +1535,127 @@
             const tanggal = document.getElementById('lk-komitmen-tanggal') ? document.getElementById('lk-komitmen-tanggal').value : '';
             const screentime = document.getElementById('spend-time-clock') ? document.getElementById('spend-time-clock').innerText : '';
 
-            const payload = { nama, jenis_kelamin, kelompok, dampak, penolakan, target, support_system, ekskul, konsultasi, tanggal, screentime };
+            return { nama, jenis_kelamin, kelompok, dampak, penolakan, target, support_system, ekskul, konsultasi, tanggal, screentime, source: 'mpls-form' };
+        }
 
+        async function sendSpreadsheetPayload(payload) {
             if (!SHEET_UPDATE_URL) {
-                showToast('Fitur update otomatis memerlukan Google Apps Script endpoint. Silakan set SHEET_UPDATE_URL di skrip atau ikuti instruksi README.', 'error');
-                return;
+                throw new Error('Endpoint spreadsheet belum tersedia.');
             }
 
-            fetch(SHEET_UPDATE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-                .then(r => r.json())
-                .then(res => {
-                    if (res && res.status === 'success') {
-                        showToast('Sinkronisasi data ke spreadsheet berhasil diupdate!', 'success');
-                        fetchSheetData();
-                    } else {
-                        console.warn('Unexpected response', res);
-                        showToast('Update selesai, namun respon server tidak seperti yang diharapkan.', 'error');
-                    }
-                })
-                .catch(err => { console.error(err); showToast('Gagal mengupdate spreadsheet: ' + (err.message || err), 'error'); });
+            const formBody = new URLSearchParams(payload).toString();
+            const jsonBody = JSON.stringify(payload);
+
+            const trySend = async (body, contentType) => {
+                const response = await fetch(SHEET_UPDATE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': contentType
+                    },
+                    body,
+                    mode: 'cors',
+                    credentials: 'omit',
+                    keepalive: true
+                });
+
+                const text = await response.text();
+                let parsed = null;
+                try { parsed = text ? JSON.parse(text) : null; } catch (_) {}
+                return { response, text, parsed };
+            };
+
+            const firstAttempt = await trySend(formBody, 'application/x-www-form-urlencoded;charset=UTF-8');
+            if (firstAttempt.response.ok) {
+                const success = firstAttempt.parsed && (firstAttempt.parsed.status === 'success' || firstAttempt.parsed.ok === true || firstAttempt.parsed.result === 'success');
+                if (success || firstAttempt.text.toLowerCase().includes('success') || firstAttempt.text.toLowerCase().includes('ok')) {
+                    return firstAttempt.parsed || { status: 'success' };
+                }
+            }
+
+            const secondAttempt = await trySend(jsonBody, 'application/json');
+            if (secondAttempt.response.ok) {
+                const success = secondAttempt.parsed && (secondAttempt.parsed.status === 'success' || secondAttempt.parsed.ok === true || secondAttempt.parsed.result === 'success');
+                if (success || secondAttempt.text.toLowerCase().includes('success') || secondAttempt.text.toLowerCase().includes('ok')) {
+                    return secondAttempt.parsed || { status: 'success' };
+                }
+            }
+
+            throw new Error(firstAttempt.text || secondAttempt.text || 'Respons server tidak valid.');
         }
+
+        let autosaveTimer = null;
+        const autosaveFieldIds = [
+            'input-nama',
+            'input-jk',
+            'input-kelompok',
+            'input-kelompok-manual',
+            'lk-analisis-q1',
+            'lk-analisis-q2',
+            'lk-komitmen-target',
+            'lk-komitmen-support',
+            'lk-komitmen-ekskul',
+            'lk-komitmen-konsul',
+            'lk-komitmen-tanggal'
+        ];
+
+        function scheduleAutoSave() {
+            const name = document.getElementById('input-nama')?.value.trim();
+            if (!name) return;
+            clearTimeout(autosaveTimer);
+            autosaveTimer = setTimeout(() => {
+                window.updateSpreadsheet({ silent: true });
+            }, 1200);
+        }
+
+        window.updateSpreadsheet = function(options = {}) {
+            const { silent = false } = options;
+            const payload = buildSpreadsheetPayload();
+            const nama = payload.nama;
+            if (!nama) {
+                if (!silent) showToast('Mohon isi Nama sebelum melakukan update.', 'error');
+                return Promise.resolve(false);
+            }
+
+            if (!SHEET_UPDATE_URL) {
+                if (!silent) showToast('Fitur update otomatis memerlukan Google Apps Script endpoint. Silakan set SHEET_UPDATE_URL di skrip atau ikuti instruksi README.', 'error');
+                return Promise.resolve(false);
+            }
+
+            return sendSpreadsheetPayload(payload)
+                .then(res => {
+                    if (res && (res.status === 'success' || res.ok === true || res.result === 'success')) {
+                        if (!silent) showToast('Sinkronisasi data ke spreadsheet berhasil diupdate!', 'success');
+                        fetchSheetData();
+                        return true;
+                    }
+                    if (!silent) showToast('Update selesai, namun respon server tidak seperti yang diharapkan.', 'error');
+                    return false;
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (!silent) showToast('Gagal mengupdate spreadsheet: ' + (err.message || err), 'error');
+                    return false;
+                });
+        }
+
+        document.addEventListener('input', (event) => {
+            if (autosaveFieldIds.includes(event.target?.id)) {
+                scheduleAutoSave();
+            }
+        });
+
+        document.addEventListener('change', (event) => {
+            if (autosaveFieldIds.includes(event.target?.id)) {
+                scheduleAutoSave();
+            }
+        });
+
+        setTimeout(() => {
+            if (document.getElementById('input-nama')?.value.trim()) {
+                scheduleAutoSave();
+            }
+        }, 1000);
 
         const originalTitle = document.title;
 
