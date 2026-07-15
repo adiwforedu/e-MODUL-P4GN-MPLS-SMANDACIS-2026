@@ -1323,6 +1323,41 @@
             const buttons = container.querySelectorAll("button");
             buttons.forEach(btn => btn.disabled = true);
             feedbackBox.classList.remove("hidden");
+
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const audioCtx = new AudioContext();
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
+                    if (chosenAnswer === correctAnswer) {
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                        oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                        oscillator.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.4);
+                    } else {
+                        oscillator.type = 'sawtooth';
+                        oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+                        oscillator.frequency.linearRampToValueAtTime(150, audioCtx.currentTime + 0.3);
+                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.4);
+                    }
+                }
+            } catch (e) {
+                console.warn("Audio playback failed", e);
+            }
+
             if (chosenAnswer === correctAnswer) {
                 feedbackBox.className = "feedback-box text-[11px] p-3 rounded-xl border mt-2 bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-955/40 dark:border-emerald-900/60 dark:text-emerald-400 font-medium";
                 feedbackBox.innerHTML = `🎉 <strong>Benar!</strong> Jawaban yang tepat adalah <strong>${correctAnswer}</strong>.<br><span class="italic">"${explanation}"</span>`;
