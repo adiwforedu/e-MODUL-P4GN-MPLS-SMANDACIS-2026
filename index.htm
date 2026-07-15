@@ -335,7 +335,7 @@
                         Peredaran Gelap Narkotika</p>
                 </div>
                 <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider">
-                    SLIDE <span id="slide-number-indicator">1</span> / 6
+                    SLIDE <span id="slide-number-indicator">1</span> / 7
                 </div>
             </div>
 
@@ -389,6 +389,7 @@
                     <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-4"></span>
                     <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-5"></span>
                     <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-6"></span>
+                    <span class="w-2 h-2 rounded-full transition-all duration-300" id="dot-7"></span>
                 </div>
                 <button id="btn-slide-next" onclick="changeSlide(1)"
                     class="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
@@ -1110,7 +1111,26 @@
     <script type="module">
         const databaseSlides = [
             {
-                judul: "01. Membuka Gerbang Potensi",
+                judul: "01. Tujuan Pembelajaran (MPLS 2026)",
+                deskripsi: `<ul class="list-disc pl-3 space-y-1.5 mt-1 text-[11px] leading-relaxed">
+                    <li>Melalui eksplorasi E-Modul Interaktif MPLS Ramah dan Pancawaluya 2026, murid baru mampu memahami bahaya medis dan yuridis NAPZA secara komprehensif dan akurat.</li>
+                    <li>Melalui pemahaman studi kasus dan simulasi sosial pada modul, murid baru mampu mengaplikasikan sikap asertif dalam menolak ajakan negatif secara tegas dan penuh percaya diri.</li>
+                    <li>Melalui penyusunan portofolio komitmen P4GN, murid baru mampu merefleksikan komitmen gaya hidup sehat bebas narkoba secara kritis dan penuh tanggung jawab.</li>
+                </ul>`,
+                image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?w=600&auto=format&fit=crop&q=80",
+                badge: "Fokus: Pengalaman Pembelajaran Mendalam",
+                modalHeader: "🎯 Rincian Tujuan Pembelajaran",
+                modalContent: `
+                    <p class="font-medium text-slate-700 dark:text-slate-300 mb-3">Modul ini dirancang untuk memberikan tiga pengalaman pembelajaran mendalam (Deep Learning):</p>
+                    <ul class="list-none space-y-3 text-sm text-slate-600 dark:text-slate-400">
+                        <li><span class="font-bold text-blue-600 dark:text-blue-400">1. Memahami (Understanding):</span> Mengeksplorasi fakta klinis kerusakan sistem saraf otak dan menyadari ancaman sanksi hukum (pidana & akademik) dari penyalahgunaan NAPZA.</li>
+                        <li><span class="font-bold text-blue-600 dark:text-blue-400">2. Mengaplikasi (Applying):</span> Mempraktikkan teknik komunikasi asertif untuk secara tegas menolak ajakan negatif di lingkungan sebaya dan memilih rutinitas positif melalui ekstrakurikuler.</li>
+                        <li><span class="font-bold text-blue-600 dark:text-blue-400">3. Merefleksi (Reflecting):</span> Melakukan evaluasi terhadap diri dan dukungan sistem (support system), serta menyusun portofolio komitmen nyata untuk mewujudkan lingkungan sekolah ramah yang sehat.</li>
+                    </ul>
+                `
+            },
+            {
+                judul: "02. Membuka Gerbang Potensi",
                 deskripsi: "Memasuki jenjang SMA (Fase E) berarti kalian memegang kendali penuh atas masa depan. SMAN 2 Ciamis menyambut kalian di ekosistem belajar yang sehat, seru, suportif, dan bebas dari bayang-bayang pengaruh buruk zat adiktif.",
                 image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop&q=80",
                 badge: "Tujuan: Memperkuat imunitas",
@@ -1122,7 +1142,7 @@
                 `
             },
             {
-                judul: "02. Bedah Fakta Medis & Yuridis NAPZA",
+                judul: "03. Bedah Fakta Medis & Yuridis NAPZA",
                 deskripsi: "NAPZA adalah singkatan dari Narkotika, Psikotropika, dan Zat Adiktif. Klasifikasi ketiga golongan ini diatur secara ketat berdasarkan hukum positif Negara Republik Indonesia untuk melindungi masa depan generasi bangsa.",
                 image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&auto=format&fit=crop&q=80",
                 badge: "Klinis & Hukum: Tinjauan yuridis komparatif berdasarkan Undang-Undang RI.",
@@ -1193,7 +1213,7 @@
                 `
             },
             {
-                judul: "03. Sistem Saraf Pusat di Bawah Ancaman",
+                judul: "04. Sistem Saraf Pusat di Bawah Ancaman",
                 deskripsi: "Zat adiktif menyerang organ otak secara instan dengan merusak jalur pelepasan dopamin. Efek buruknya meliputi penurunan kecerdasan intelektual secara drastis, halusinasi parah, cemas ekstrem, hingga memicu kerusakan saraf permanen.",
                 image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&auto=format&fit=crop&q=80",
                 badge: "Sains: Kerusakan permanen pada sistem neurotransmiter otak.",
@@ -1210,7 +1230,7 @@
                 `
             },
             {
-                judul: "04. Sanksi Hukum & Drop Out",
+                judul: "05. Sanksi Hukum & Drop Out",
                 deskripsi: "Konsekuensi penyalahgunaan zat bukan cuma soal kesehatan hancur. Secara hukum, pelakunya diancam pidana penjara bertahun-tahun, rekam jejak kriminal cacat di kepolisian (SKCK rusak), hingga sanksi pemutusan hak belajar dari sekolah.",
                 image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=600&auto=format&fit=crop&q=80",
                 badge: "Aspek Legal: Kehilangan reputasi, sanksi penjara, and hancurnya masa depan.",
@@ -1225,7 +1245,7 @@
                 `
             },
             {
-                judul: "05. Trik Jitu Ngomong Asertif",
+                judul: "06. Trik Jitu Ngomong Asertif",
                 deskripsi: "Menolak ajakan negatif adalah sebuah skill kepemimpinan yang keren. Terapkan sikap asertif: tatap matanya, katakan penolakan secara mantap dengan intonasi percaya diri, lalu langsung alihkan ke topik positif lain.",
                 image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop&q=80",
                 badge: 'Life Skill: Berani menolak ajakan negatif adalah bukti karakter unggul.',
@@ -1243,7 +1263,7 @@
                 `
             },
             {
-                judul: "06. Aktivasi Sinergi Ekskul Smandacis",
+                judul: "07. Aktivasi Sinergi Ekskul Smandacis",
                 deskripsi: "Salurkan bakat dan energi mudamu ke wadah ekstrakurikuler resmi sekolah. Gerakan pencegahan ini didukung penuh oleh seluruh warga sekolah demi menjaga ekosistem sekolah ramah.",
                 image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&auto=format&fit=crop&q=80",
                 badge: "Solusi Bersama: Kolaborasi total seluruh warga sekolah dalam P4GN.",
@@ -1267,7 +1287,7 @@
             const slideImage = document.getElementById("slide-image");
             document.getElementById("slide-number-indicator").innerText = activeSlideIndex + 1;
             document.getElementById("slide-title").innerText = slide.judul;
-            document.getElementById("slide-description").innerText = slide.deskripsi;
+            document.getElementById("slide-description").innerHTML = slide.deskripsi;
             slideImage.onerror = null;
             slideImage.src = slide.image;
             slideImage.onerror = function () {
@@ -1701,16 +1721,7 @@
         }
 
         function getSheetEndpoint() {
-            const fromQuery = new URLSearchParams(window.location.search).get('sheetEndpoint');
-            if (fromQuery) {
-                try {
-                    localStorage.setItem('mpls-sheet-endpoint', fromQuery);
-                } catch (err) {
-                    console.warn('Gagal menyimpan endpoint di localStorage:', err);
-                }
-                return fromQuery;
-            }
-            return localStorage.getItem('mpls-sheet-endpoint') || '';
+            return 'https://script.google.com/macros/s/AKfycbzAQBZxOPUlZ1s551g7H8h5oecvmxIfp4yOrf3vXCtW2L39cY3slSMBM9GiQkb4vBvp/exec';
         }
 
         function normalizeText(value) {
@@ -1960,18 +1971,7 @@
                 formData.append(key, String(value ?? ''));
             });
 
-            const payloadString = formData.toString();
-
-            try {
-                // Gunakan fetch dengan mode 'no-cors' agar tidak terblokir saat dikirim dari localhost
-                await fetch(SHEET_UPDATE_URL, {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors',
-                    keepalive: true
-                });
-                return { status: 'success', mode: 'fetch-post' };
-            } catch (err) {
+            return new Promise((resolve) => {
                 const iframeName = 'sheet-submit-frame';
                 let iframe = document.getElementById(iframeName);
                 if (!iframe) {
@@ -2001,10 +2001,9 @@
 
                 setTimeout(() => {
                     if (form.parentNode) form.parentNode.removeChild(form);
-                }, 1000);
-
-                return { status: 'success', mode: 'iframe-post' };
-            }
+                    resolve({ status: 'success', mode: 'iframe-post' });
+                }, 5000);
+            });
         }
 
         let autosaveTimer = null;
