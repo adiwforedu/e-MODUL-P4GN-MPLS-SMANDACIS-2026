@@ -1724,7 +1724,13 @@
         };
 
         const BACKUP_SUBMISSION_KEY = 'mpls-last-submission';
-        let sheetData = [];
+        // Database Master Siswa dari Google Sheets (Untuk Autofill Nama, Kelas & Jenis Kelamin secara instan)
+        const SHEET_READ_ID = new URLSearchParams(window.location.search).get('sheetReadId') || new URLSearchParams(window.location.search).get('sheetId') || '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
+        const SHEET_WRITE_ID = new URLSearchParams(window.location.search).get('sheetWriteId') || '10k_Id3PKWHMmVdAsONCj2xlbuGtdK6S8pvrZZzmBmSc';
+
+        let sheetData = []; // Gabungan data master dari Google Sheets + Firebase
+        let masterRosterData = []; // Data mentah absen siswa dari Google Sheets
+        let firebaseRosterData = []; // Data dari Firebase Realtime Database
         let lastSubmittedPayload = null;
         let dbRef = null;
         let isFirebaseOnline = false;
@@ -1792,37 +1798,145 @@
                 .replace(/\s+/g, '_') || 'peserta_' + Date.now();
         }
 
+        function extractStudentFromRow(r) {
+            if (!r || !r.c) return null;
+            const vals = r.c.map(cell => (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '');
+            if (!vals.some(v => v !== '') || vals.includes('Nama') || vals.includes('nama') || vals.includes('Asal Sekolah')) {
+                return null;
+            }
+            let name = '', jk = '', kelompok = '';
+            // Format Roster Master (Kolom A: Nomor, Kolom B: Nama, Kolom D: JK, Kolom E: Kelompok)
+            if (!isNaN(vals[0]) && vals[0] !== '' && vals[1] && isNaN(vals[1])) {
+                name = vals[1];
+                jk = vals[3] || '';
+                kelompok = vals[4] || '';
+            } 
+            // Format Roster Submisi (Kolom A: Nama, Kolom B: JK, Kolom C: Kelompok)
+            else if (vals[0] && isNaN(vals[0])) {
+                name = vals[0];
+                jk = vals[1] || '';
+                kelompok = vals[2] || '';
+            }
+            if (name && name.toLowerCase() !== 'nama' && name.length > 1) {
+                return { name: name.trim(), jk: jk.trim(), kelompok: kelompok.trim() };
+            }
+            return null;
+        }
+
+        function loadGoogleSheetJSONP(sheetId) {
+            if (!sheetId) return;
+            const callbackName = 'gviz_cb_' + sheetId.replace(/[^a-zA-Z0-9]/g, '') + '_' + Math.floor(Math.random() * 100000);
+            
+            window[callbackName] = function(json) {
+                try {
+                    const rows = (json.table && json.table.rows) ? json.table.rows : [];
+                    let addedCount = 0;
+                    rows.forEach(r => {
+                        const student = extractStudentFromRow(r);
+                        if (student) {
+                            masterRosterData.push(student);
+                            addedCount++;
+                        }
+                    });
+                    if (addedCount > 0) {
+                        mergeAndPopulate();
+                    }
+                    delete window[callbackName];
+                } catch (err) {
+                    console.warn('Gagal memproses data JSONP Gviz:', err);
+                }
+            };
+
+            const script = document.createElement('script');
+            script.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json;responseHandler:${callbackName}`;
+            script.onerror = function() {
+                console.warn('JSONP script error untuk Sheet:', sheetId, '. Mencoba fallback fetch standar...');
+                fetchFromGoogleSheetFallback(sheetId);
+            };
+            document.head.appendChild(script);
+        }
+
+        async function fetchFromGoogleSheetFallback(sheetId) {
+            if (!sheetId) return;
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+                const res = await fetch(url);
+                const text = await res.text();
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const json = JSON.parse(jsonText);
+                const rows = (json.table && json.table.rows) ? json.table.rows : [];
+                
+                let addedCount = 0;
+                rows.forEach(r => {
+                    const student = extractStudentFromRow(r);
+                    if (student) {
+                        masterRosterData.push(student);
+                        addedCount++;
+                    }
+                });
+                if (addedCount > 0) {
+                    mergeAndPopulate();
+                }
+            } catch (e) {
+                console.warn('Gagal membaca dari Sheet ID via fetch (kemungkinan kebijakan CORS file:// browser):', sheetId, e);
+            }
+        }
+
         async function fetchSheetData() {
             try {
-                if (!dbRef) {
-                    sheetData = [];
-                    populateNamesList();
-                    populateKelompokOptions();
-                    return;
+                // 1. TARIK DATA MASTER DARI GOOGLE SHEETS VIA JSONP SCRIPT (KEBAL BLOKIRAN CORS BROWSER PADA FILE:// LOKAL)
+                masterRosterData = [];
+                loadGoogleSheetJSONP(SHEET_READ_ID);
+                loadGoogleSheetJSONP(SHEET_WRITE_ID);
+
+                // 2. SINKRONISASI REALTIME FIREBASE DATABASE
+                if (dbRef) {
+                    dbRef.on('value', (snapshot) => {
+                        const dataVal = snapshot.val();
+                        firebaseRosterData = [];
+                        if (dataVal) {
+                            Object.keys(dataVal).forEach(key => {
+                                const item = dataVal[key];
+                                if (item && item.nama) {
+                                    firebaseRosterData.push({
+                                        name: item.nama,
+                                        jk: item.jenis_kelamin || 'Laki-laki',
+                                        kelompok: item.kelompok || ''
+                                    });
+                                }
+                            });
+                        }
+                        mergeAndPopulate();
+                    }, (err) => {
+                        console.warn('Gagal membaca Firebase Realtime Database:', err);
+                        mergeAndPopulate();
+                    });
+                } else {
+                    mergeAndPopulate();
                 }
-                // Sinkronisasi data real-time seketika untuk daftar nama dan opsi kelompok!
-                dbRef.on('value', (snapshot) => {
-                    const dataVal = snapshot.val();
-                    sheetData = [];
-                    if (dataVal) {
-                        Object.keys(dataVal).forEach(key => {
-                            const item = dataVal[key];
-                            if (item && item.nama) {
-                                sheetData.push({
-                                    name: item.nama,
-                                    jk: item.jenis_kelamin || 'Laki-laki',
-                                    kelompok: item.kelompok || ''
-                                });
-                            }
-                        });
-                    }
-                    populateNamesList();
-                    populateKelompokOptions();
-                }, (err) => {
-                    console.warn('Gagal membaca Firebase Realtime Database (periksa Aturan/Rules):', err);
-                });
             } catch (err) {
-                console.warn('fetchSheetData (Firebase) error', err);
+                console.warn('fetchSheetData error:', err);
+            }
+        }
+
+        function mergeAndPopulate() {
+            const map = new Map();
+            // Masukkan data dari master Google Sheets terlebih dahulu
+            masterRosterData.forEach(item => {
+                if (item && item.name) map.set(item.name.toLowerCase().trim(), item);
+            });
+            // Jika ada data/pembaruan dari Firebase, gabungkan ke dalam map
+            firebaseRosterData.forEach(item => {
+                if (item && item.name) map.set(item.name.toLowerCase().trim(), item);
+            });
+            sheetData = Array.from(map.values());
+            populateNamesList();
+            populateKelompokOptions();
+
+            // Jika user sudah mengetik nama sebelum data masuk, trigger saran secara otomatis seketika
+            const nameInput = document.getElementById('input-nama');
+            if (nameInput && nameInput.value.trim().length > 0) {
+                nameInput.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
 
