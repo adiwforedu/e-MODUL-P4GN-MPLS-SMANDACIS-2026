@@ -13,6 +13,9 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <!-- Firebase Compat SDK (App & Realtime Database) via Google CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -187,7 +190,11 @@
                     class="text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg tracking-wide shadow-sm border border-slate-200 dark:border-slate-700">Dashboard</span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+                <div id="firebase-status-badge" title="Status sinkronisasi data rekap siswa ke cloud Firebase"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] md:text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shadow-sm transition-all select-none">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Menghubungkan Firebase...
+                </div>
                 <div id="time-tracker"
                     class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-955/40 border border-amber-200 dark:border-amber-900/60 px-2.5 py-1 rounded-lg">
                     <span class="text-xs font-bold text-amber-800 dark:text-amber-300 font-mono">⏱️ <span
@@ -1323,41 +1330,6 @@
             const buttons = container.querySelectorAll("button");
             buttons.forEach(btn => btn.disabled = true);
             feedbackBox.classList.remove("hidden");
-
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) {
-                    const audioCtx = new AudioContext();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-
-                    if (chosenAnswer === correctAnswer) {
-                        oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                        oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-                        oscillator.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
-                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                        oscillator.start(audioCtx.currentTime);
-                        oscillator.stop(audioCtx.currentTime + 0.4);
-                    } else {
-                        oscillator.type = 'sawtooth';
-                        oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
-                        oscillator.frequency.linearRampToValueAtTime(150, audioCtx.currentTime + 0.3);
-                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-                        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                        oscillator.start(audioCtx.currentTime);
-                        oscillator.stop(audioCtx.currentTime + 0.4);
-                    }
-                }
-            } catch (e) {
-                console.warn("Audio playback failed", e);
-            }
-
             if (chosenAnswer === correctAnswer) {
                 feedbackBox.className = "feedback-box text-[11px] p-3 rounded-xl border mt-2 bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-955/40 dark:border-emerald-900/60 dark:text-emerald-400 font-medium";
                 feedbackBox.innerHTML = `🎉 <strong>Benar!</strong> Jawaban yang tepat adalah <strong>${correctAnswer}</strong>.<br><span class="italic">"${explanation}"</span>`;
@@ -1739,24 +1711,61 @@
 
         let sec = 0; setInterval(() => { sec++; let m = Math.floor(sec / 60), s = sec % 60; document.getElementById('spend-time-clock').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`; }, 1000);
 
-        /* --- Integrasi Google Sheets (read-only via public gviz endpoint) --- */
-        const SHEET_READ_ID = new URLSearchParams(window.location.search).get('sheetReadId') || new URLSearchParams(window.location.search).get('sheetId') || '1csHbdi7kwAoW3PIVH6YlroEo05sNiJfT';
-        const SHEET_WRITE_ID = new URLSearchParams(window.location.search).get('sheetWriteId') || '10k_Id3PKWHMmVdAsONCj2xlbuGtdK6S8pvrZZzmBmSc';
-        const SHEET_NAME = new URLSearchParams(window.location.search).get('sheetName') || 'Sheet1';
-        const SHEET_UPDATE_URL = getSheetEndpoint() || 'https://script.google.com/macros/s/AKfycbzAQBZxOPUlZ1s551g7H8h5oecvmxIfp4yOrf3vXCtW2L39cY3slSMBM9GiQkb4vBvp/exec';
-        const SHEET_UPDATE_ENABLED = true;
-        const BACKUP_SUBMISSION_KEY = 'mpls-last-submission';
+        /* --- INTEGRASI FIREBASE REALTIME DATABASE (Menggantikan Google Apps Script/Sheets) --- */
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyD5ncjq82lRwPFHIeuqmb23UdhQCoGqooo",
+            authDomain: "mpls-sman2-ciamis-2026.firebaseapp.com",
+            databaseURL: "https://mpls-sman2-ciamis-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mpls-sman2-ciamis-2026",
+            storageBucket: "mpls-sman2-ciamis-2026.firebasestorage.app",
+            messagingSenderId: "907307034864",
+            appId: "1:907307034864:web:d6932c9ee4d49e13dbba35",
+            measurementId: "G-01SZZH7GSX"
+        };
 
+        const BACKUP_SUBMISSION_KEY = 'mpls-last-submission';
         let sheetData = [];
         let lastSubmittedPayload = null;
+        let dbRef = null;
+        let isFirebaseOnline = false;
+
+        // Inisialisasi Firebase & Monitoring Status Koneksi
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                }
+                dbRef = firebase.database().ref('peserta');
+
+                // Real-time liveness indicator (UI/UX Pendidikan)
+                firebase.database().ref('.info/connected').on('value', (snap) => {
+                    isFirebaseOnline = (snap.val() === true);
+                    updateConnectionBadge(isFirebaseOnline);
+                });
+            } else {
+                console.warn('Firebase SDK belum termuat dari CDN. Mengaktifkan mode cadangan offline.');
+                updateConnectionBadge(false, 'Mode Lokal (Offline)');
+            }
+        } catch (err) {
+            console.warn('Inisialisasi Firebase gagal (kredensial standar belum diatur guru):', err);
+            updateConnectionBadge(false, 'Konfigurasi Required');
+        }
+
+        function updateConnectionBadge(online, textOverride) {
+            const badge = document.getElementById('firebase-status-badge');
+            if (!badge) return;
+            if (online) {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] md:text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 shadow-sm transition-all select-none";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Firebase Online & Realtime`;
+            } else {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] md:text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shadow-sm transition-all select-none";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${textOverride || 'Menghubungkan / Offline'}`;
+            }
+        }
 
         function arePayloadsEqual(a, b) {
             if (!a || !b) return false;
             return JSON.stringify(a) === JSON.stringify(b);
-        }
-
-        function getSheetEndpoint() {
-            return 'https://script.google.com/macros/s/AKfycbzAQBZxOPUlZ1s551g7H8h5oecvmxIfp4yOrf3vXCtW2L39cY3slSMBM9GiQkb4vBvp/exec';
         }
 
         function normalizeText(value) {
@@ -1770,47 +1779,50 @@
                     savedAt: new Date().toISOString()
                 }));
             } catch (err) {
-                console.warn('Gagal menyimpan cadangan data:', err);
+                console.warn('Gagal menyimpan cadangan data lokal:', err);
             }
+        }
+
+        function sanitizeFirebaseKey(text) {
+            // Firebase node keys tidak boleh mengandung titik (.), #, $, /, [, atau ]
+            return String(text || 'tanpa_nama')
+                .trim()
+                .toLowerCase()
+                .replace(/[.#$/\[\]]/g, '_')
+                .replace(/\s+/g, '_') || 'peserta_' + Date.now();
         }
 
         async function fetchSheetData() {
             try {
-                const sheetParam = SHEET_NAME ? `&sheet=${encodeURIComponent(SHEET_NAME)}` : '';
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_READ_ID}/gviz/tq?tqx=out:json${sheetParam}`;
-                const res = await fetch(url);
-                const text = await res.text();
-                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                const json = JSON.parse(jsonText);
-                const rows = (json.table && json.table.rows) ? json.table.rows : [];
-
-                if (rows.length <= 1) {
+                if (!dbRef) {
                     sheetData = [];
                     populateNamesList();
                     populateKelompokOptions();
-                    showToast('Spreadsheet belum berisi data peserta. Isi baris data di sheet yang benar.', 'error');
                     return;
                 }
-
-                const headerRow = (rows[0].c || []).map(cell => cell && cell.v ? String(cell.v).trim().toLowerCase() : '');
-                const nameIndex = headerRow.findIndex(label => ['nama', 'name'].includes(label));
-                const jkIndex = headerRow.findIndex(label => ['jenis_kelamin', 'jenis kelamin', 'gender', 'jk'].includes(label));
-                const kelompokIndex = headerRow.findIndex(label => ['kelompok', 'group', 'group name'].includes(label));
-
-                function getCellValue(row, index) {
-                    return row.c && row.c[index] && row.c[index].v ? String(row.c[index].v).trim() : '';
-                }
-
-                sheetData = rows.slice(1).map(r => ({
-                    name: nameIndex >= 0 ? getCellValue(r, nameIndex) : getCellValue(r, 1),
-                    jk: jkIndex >= 0 ? getCellValue(r, jkIndex) : getCellValue(r, 3),
-                    kelompok: kelompokIndex >= 0 ? getCellValue(r, kelompokIndex) : getCellValue(r, 4)
-                })).filter(x => x.name);
-
-                populateNamesList();
-                populateKelompokOptions();
+                // Sinkronisasi data real-time seketika untuk daftar nama dan opsi kelompok!
+                dbRef.on('value', (snapshot) => {
+                    const dataVal = snapshot.val();
+                    sheetData = [];
+                    if (dataVal) {
+                        Object.keys(dataVal).forEach(key => {
+                            const item = dataVal[key];
+                            if (item && item.nama) {
+                                sheetData.push({
+                                    name: item.nama,
+                                    jk: item.jenis_kelamin || 'Laki-laki',
+                                    kelompok: item.kelompok || ''
+                                });
+                            }
+                        });
+                    }
+                    populateNamesList();
+                    populateKelompokOptions();
+                }, (err) => {
+                    console.warn('Gagal membaca Firebase Realtime Database (periksa Aturan/Rules):', err);
+                });
             } catch (err) {
-                console.warn('fetchSheetData error', err);
+                console.warn('fetchSheetData (Firebase) error', err);
             }
         }
 
@@ -1990,55 +2002,20 @@
         }
 
         async function sendSpreadsheetPayload(payload) {
-            if (!SHEET_UPDATE_ENABLED || !SHEET_UPDATE_URL) {
-                throw new Error('Endpoint spreadsheet belum tersedia.');
+            if (!dbRef) {
+                throw new Error('Koneksi ke Firebase belum aktif. Pastikan FIREBASE_CONFIG sudah diisi dengan benar.');
             }
+            const namaKey = sanitizeFirebaseKey(payload.nama);
+            const childRef = dbRef.child(namaKey);
 
-            const payloadForSend = {
+            const payloadToSave = {
                 ...payload,
-                sheet_id: SHEET_WRITE_ID,
-                sheet_name: SHEET_NAME,
-                submitted_at: payload.submitted_at || new Date().toISOString()
+                submitted_at: payload.submitted_at || new Date().toISOString(),
+                device_timestamp: Date.now()
             };
 
-            const formData = new URLSearchParams();
-            Object.entries(payloadForSend).forEach(([key, value]) => {
-                formData.append(key, String(value ?? ''));
-            });
-
-            return new Promise((resolve) => {
-                const iframeName = 'sheet-submit-frame';
-                let iframe = document.getElementById(iframeName);
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.name = iframeName;
-                    iframe.id = iframeName;
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                }
-
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = SHEET_UPDATE_URL;
-                form.target = iframeName;
-                form.style.display = 'none';
-
-                Object.entries(payloadForSend).forEach(([key, value]) => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = String(value ?? '');
-                    form.appendChild(input);
-                });
-
-                document.body.appendChild(form);
-                form.submit();
-
-                setTimeout(() => {
-                    if (form.parentNode) form.parentNode.removeChild(form);
-                    resolve({ status: 'success', mode: 'iframe-post' });
-                }, 5000);
-            });
+            await childRef.set(payloadToSave);
+            return { status: 'success', mode: 'firebase-rtdb', key: namaKey };
         }
 
         let autosaveTimer = null;
@@ -2081,44 +2058,42 @@
             const nama = normalizeText(payload.nama);
             if (!nama) {
                 if (!silent) {
-                    console.warn('Nama input saat updateSpreadsheet kosong atau hanya berisi spasi:', JSON.stringify(payload.nama));
-                    showToast('Mohon isi Nama sebelum melakukan update.', 'error');
+                    console.warn('Nama input kosong saat update:', JSON.stringify(payload.nama));
+                    showToast('Mohon isi Nama Siswa terlebih dahulu sebelum memproses.', 'error');
                 }
                 return Promise.resolve(false);
             }
 
-            // always keep a local backup
+            // Simpan salinan lokal selalu aktif (ketahan-malangan offline / offline resilience)
             saveSubmissionBackup(payload);
 
-            // do not send to spreadsheet unless explicitly forced (e.g. lock action)
             if (!force) {
                 lastSubmittedPayload = payload;
-                if (!silent) showToast('Data disimpan secara lokal. Tekan "Kunci Portfolio" untuk kirim ke rekap.', 'success');
+                if (!silent) showToast('Data terlindungi di memori browser. Tekan "Kunci Portfolio" untuk upload permanen ke Firebase.', 'success');
                 return Promise.resolve(true);
             }
 
-            if (!SHEET_UPDATE_ENABLED) {
-                if (!silent) showToast('Rekap spreadsheet dinonaktifkan.', 'error');
+            if (!dbRef && !isFirebaseOnline) {
+                if (!silent) showToast('Anda sedang offline atau FIREBASE_CONFIG belum diatur. Data teramankan lokal di gawai ini.', 'error');
                 return Promise.resolve(false);
             }
 
-            // only now perform the network send
+            // Kirim secara langsung (Real-time Promise) ke Google Cloud / Firebase!
             return sendSpreadsheetPayload(payload)
                 .then(res => {
                     if (res && res.status === 'success') {
                         lastSubmittedPayload = payload;
                         if (!silent) {
-                            showToast('Permintaan kirim data ke spreadsheet telah dikirim. Silakan tunggu beberapa saat lalu cek kembali.', 'success');
+                            showToast('⚡ Luar biasa! Portofolio berhasil dikunci & tersimpan real-time di Database Sekolah!', 'success', 4000);
                         }
-                        fetchSheetData();
                         return true;
                     }
-                    if (!silent) showToast('Update selesai, namun respon server tidak seperti yang diharapkan.', 'error');
+                    if (!silent) showToast('Proses tersubmisi, namun status respon server tidak pasti.', 'error');
                     return false;
                 })
                 .catch(err => {
-                    console.error(err);
-                    if (!silent) showToast('Gagal mengupdate spreadsheet: ' + (err.message || err), 'error');
+                    console.error('Firebase save error:', err);
+                    if (!silent) showToast('Gagal mengirim ke database Firebase: ' + (err.message || err), 'error');
                     return false;
                 });
         }
