@@ -16,6 +16,8 @@
     <!-- Firebase Compat SDK (App & Realtime Database) via Google CDN -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <!-- SheetJS (XLSX) untuk ekspor Excel asli (.xlsx) dengan susunan rapi, auto-width, & bebas ganda -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -169,6 +171,12 @@
                     class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors">
                     <span class="text-amber-400 text-sm">🔖</span> Referensi
                 </button>
+                <div class="pt-2 mt-2 border-t border-slate-800">
+                    <button onclick="openAdminGateway()" id="nav-desk-adminguru"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600/20 to-teal-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 transition-all shadow-sm">
+                        <span class="text-sm">🔐</span> Ruang Rekap Guru
+                    </button>
+                </div>
             </nav>
         </div>
     </aside>
@@ -1087,10 +1095,163 @@
             </div>
         </section>
 
+        <!-- ========================================== -->
+        <!-- HALAMAN DASBOR REKAP GURU (ROLE ADMIN)     -->
+        <!-- ========================================== -->
+        <section id="page-adminguru" class="hidden max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+            <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="space-y-1.5">
+                        <span class="bg-emerald-400/20 border border-emerald-300/30 text-emerald-200 text-[10px] font-bold px-3 py-1 rounded-full tracking-wide inline-flex items-center gap-1">
+                            <span>🛡️ Mode: Pembimbing / Admin Guru (Aktif)</span>
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Rekapitulasi Portofolio MPLS 2026</h2>
+                        <p class="text-xs md:text-sm text-emerald-100 max-w-2xl leading-relaxed">
+                            Pantauan real-time pengiriman portofolio P4GN dan skor asesmen murid dari Firebase Database.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                        <button onclick="exportRekapToExcel()" class="bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-slate-900 font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5 flex items-center gap-2" title="Unduh Excel rapi tersusun per baris/kolom dan otomatis hapus nama ganda">
+                            <span>📥</span> Download Excel (.XLSX Rapi & Bebas Ganda)
+                        </button>
+                        <button onclick="refreshAdminData()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+                            <span>🔄</span> Refresh
+                        </button>
+                        <button onclick="exitAdminMode()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow transition-all flex items-center gap-1.5">
+                            <span>🚪</span> Keluar Mode Guru
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl font-bold">👥</div>
+                    <div>
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Total Portofolio</p>
+                        <h4 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-total-siswa">0</h4>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">🎯</div>
+                    <div>
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Rata-rata Skor</p>
+                        <h4 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-avg-skor">0</h4>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl font-bold">🏫</div>
+                    <div>
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Kelompok Aktif</p>
+                        <h4 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-total-kelompok">0</h4>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl font-bold">⏱️</div>
+                    <div class="overflow-hidden">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Submisi Terbaru</p>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-white truncate" id="stat-latest-siswa">-</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter and Table Container -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row justify-between gap-3 items-center border-b border-slate-100 dark:border-slate-750 pb-4">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>📋</span> Tabel Live Rekapitulasi Murid
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <div class="relative flex-grow md:w-64">
+                            <input type="text" id="admin-search-input" oninput="filterAdminTable()" placeholder="🔍 Cari nama murid / sekolah..." 
+                                class="w-full pl-3 pr-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <select id="admin-filter-kelompok" onchange="filterAdminTable()" 
+                            class="px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-emerald-500 font-medium">
+                            <option value="ALL">-- Semua Kelompok / Kelas --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase font-extrabold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                <th class="p-3.5 w-12 text-center">No</th>
+                                <th class="p-3.5">Nama Murid</th>
+                                <th class="p-3.5">Kelompok</th>
+                                <th class="p-3.5">JK</th>
+                                <th class="p-3.5 text-center">Skor Asesmen</th>
+                                <th class="p-3.5">Komitmen P4GN & Refleksi</th>
+                                <th class="p-3.5">Waktu Submit</th>
+                                <th class="p-3.5 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-200 dark:divide-slate-750 font-medium text-slate-700 dark:text-slate-300">
+                            <tr>
+                                <td colspan="8" class="text-center py-8 text-slate-400">Mengambil data realtime dari Firebase...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <footer
             class="bg-slate-100 dark:bg-slate-955 border-t border-slate-200 dark:border-slate-850 text-center py-4 text-[10px] text-slate-400 dark:text-slate-500 mt-auto no-print">
             &copy; 2026 MPLS - SMAN 2 Ciamis
         </footer>
+    </div>
+
+    <!-- Modal PIN Gateway Guru -->
+    <div id="modal-pin-guru" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[99] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-5 text-center relative animate-in fade-in zoom-in duration-200">
+            <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black shadow-inner">
+                🔐
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Gerbang Akses Guru</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Masukkan Kata Sandi Khusus Guru untuk mengakses pusat rekapitulasi nilai dan unduh data Excel.
+                </p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="input-pin-guru" placeholder="Masukkan kata sandi..." 
+                    onkeydown="if(event.key==='Enter') submitPinGuru()"
+                    class="w-full text-center tracking-widest text-base font-bold px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-emerald-500 shadow-sm">
+                <p id="error-pin-msg" class="text-rose-500 text-[11px] font-semibold hidden">❌ Kata sandi tidak tepat. Silakan coba lagi!</p>
+                <div class="flex gap-2.5 pt-2">
+                    <button onclick="closePinModal()" class="w-1/2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        Batal
+                    </button>
+                    <button onclick="submitPinGuru()" class="w-1/2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                        Buka Ruang Guru
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Murid Admin -->
+    <div id="modal-detail-murid" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[99] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 text-xs max-h-[85vh] overflow-y-auto relative">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-750 pb-3">
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>📋</span> Detail Portofolio Siswa
+                </h3>
+                <button onclick="closeDetailModal()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
+            </div>
+            <div id="content-detail-murid" class="space-y-3 text-slate-700 dark:text-slate-300">
+                <!-- Loaded dynamically -->
+            </div>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-750 flex justify-end">
+                <button onclick="closeDetailModal()" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold px-5 py-2.5 rounded-xl hover:bg-slate-300 transition-colors">
+                    Tutup Jendela
+                </button>
+            </div>
+        </div>
     </div>
 
     <div
@@ -1112,6 +1273,9 @@
         </button>
         <button onclick="navigateTo('referensi')" class="flex flex-col items-center gap-0.5 text-slate-400">
             <span class="text-base">🔖</span><span class="text-[9px] font-medium">Referensi</span>
+        </button>
+        <button onclick="openAdminGateway()" class="flex flex-col items-center gap-0.5 text-emerald-500 font-bold">
+            <span class="text-base">🔐</span><span class="text-[9px] font-bold">Guru</span>
         </button>
     </div>
 
@@ -1405,7 +1569,7 @@
         }
 
         window.navigateTo = function (pageName) {
-            const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi'];
+            const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi', 'adminguru'];
             pages.forEach(p => {
                 const targetPage = document.getElementById(`page-${p}`);
                 if (targetPage) targetPage.classList.add('hidden');
@@ -1417,7 +1581,7 @@
             const desktopHeader = document.getElementById('header-page-title');
             const mobileTitle = document.getElementById('mobile-page-title');
 
-            let displayTitle = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+            let displayTitle = pageName === 'adminguru' ? 'Ruang Rekap Guru' : (pageName.charAt(0).toUpperCase() + pageName.slice(1));
             if (desktopHeader) desktopHeader.innerText = displayTitle;
             if (mobileTitle) mobileTitle.innerText = displayTitle;
 
@@ -1429,20 +1593,26 @@
                 setTimeout(initSignatureCanvas, 100);
             } else if (pageName === 'cetak') {
                 syncDataToPrintTemplate();
+            } else if (pageName === 'adminguru') {
+                if (typeof renderAdminTable === 'function') renderAdminTable();
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         function updateSidebarStyles(activePage) {
-            const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi'];
+            const pages = ['dashboard', 'materi', 'asesmen', 'cetak', 'refleksi', 'referensi', 'adminguru'];
             pages.forEach(p => {
                 const btn = document.getElementById(`nav-desk-${p}`);
                 if (!btn) return;
                 if (p === activePage) {
                     btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-md transition-all";
                 } else {
-                    btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors";
+                    if (p === 'adminguru') {
+                        btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600/20 to-teal-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 transition-all shadow-sm";
+                    } else {
+                        btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors";
+                    }
                 }
             });
         }
@@ -1731,6 +1901,7 @@
         let sheetData = []; // Gabungan data master dari Google Sheets + Firebase
         let masterRosterData = []; // Data mentah absen siswa dari Google Sheets
         let firebaseRosterData = []; // Data dari Firebase Realtime Database
+        let firebaseSubmissions = []; // Rekap data lengkap untuk dasbor rekap guru
         let lastSubmittedPayload = null;
         let dbRef = null;
         let isFirebaseOnline = false;
@@ -1894,6 +2065,7 @@
                     dbRef.on('value', (snapshot) => {
                         const dataVal = snapshot.val();
                         firebaseRosterData = [];
+                        firebaseSubmissions = [];
                         if (dataVal) {
                             Object.keys(dataVal).forEach(key => {
                                 const item = dataVal[key];
@@ -1903,10 +2075,15 @@
                                         jk: item.jenis_kelamin || 'Laki-laki',
                                         kelompok: item.kelompok || ''
                                     });
+                                    firebaseSubmissions.push({
+                                        key: key,
+                                        ...item
+                                    });
                                 }
                             });
                         }
                         mergeAndPopulate();
+                        if (typeof renderAdminTable === 'function') renderAdminTable();
                     }, (err) => {
                         console.warn('Gagal membaca Firebase Realtime Database:', err);
                         mergeAndPopulate();
@@ -2256,6 +2433,382 @@
             document.title = originalTitle;
             document.documentElement.removeAttribute('data-print-title');
         });
+
+        /* --- SISTEM DASBOR PEMBIMBING / GURU P4GN (2-ROLE ARCHITECTURE) --- */
+        const PIN_KATA_SANDI_GURU = "Andalusia_2";
+        let isAdminAuthorized = false;
+        let activeAdminFilterKelompok = "ALL";
+        let activeAdminSearchText = "";
+
+        window.openAdminGateway = function() {
+            if (isAdminAuthorized) {
+                navigateTo('adminguru');
+            } else {
+                const inputPin = document.getElementById('input-pin-guru');
+                if (inputPin) inputPin.value = '';
+                const errMsg = document.getElementById('error-pin-msg');
+                if (errMsg) errMsg.classList.add('hidden');
+                const modal = document.getElementById('modal-pin-guru');
+                if (modal) modal.classList.remove('hidden');
+                setTimeout(() => inputPin && inputPin.focus(), 100);
+            }
+        };
+
+        window.closePinModal = function() {
+            const modal = document.getElementById('modal-pin-guru');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.submitPinGuru = function() {
+            const inputVal = document.getElementById('input-pin-guru')?.value;
+            if (inputVal === PIN_KATA_SANDI_GURU) {
+                isAdminAuthorized = true;
+                closePinModal();
+                showToast('🔐 Selamat datang Pembimbing / Guru! Mode Dasbor Analisis kini aktif.', 'success', 3500);
+                navigateTo('adminguru');
+                renderAdminTable();
+            } else {
+                const errMsg = document.getElementById('error-pin-msg');
+                if (errMsg) errMsg.classList.remove('hidden');
+                const inputPin = document.getElementById('input-pin-guru');
+                if (inputPin) {
+                    inputPin.value = '';
+                    inputPin.focus();
+                }
+            }
+        };
+
+        window.exitAdminMode = function() {
+            isAdminAuthorized = false;
+            showToast('🚪 Keluar dari Mode Pembimbing. Kembali ke Tampilan Murid.', 'success');
+            navigateTo('dashboard');
+        };
+
+        window.refreshAdminData = function() {
+            showToast('🔄 Memperbarui sinkronisasi data dari cloud Firebase...', 'success', 1500);
+            renderAdminTable();
+        };
+
+        window.filterAdminTable = function() {
+            activeAdminSearchText = (document.getElementById('admin-search-input')?.value || '').toLowerCase().trim();
+            activeAdminFilterKelompok = document.getElementById('admin-filter-kelompok')?.value || 'ALL';
+            renderAdminTable();
+        };
+
+        function getDeduplicatedSubmissions() {
+            if (!firebaseSubmissions || firebaseSubmissions.length === 0) return [];
+            const map = new Map();
+            firebaseSubmissions.forEach(item => {
+                const rawName = String(item.nama || 'Tanpa Nama').replace(/\s+/g, ' ').trim();
+                const normName = rawName.toLowerCase();
+                
+                let points = 0;
+                if (item.dampak && item.dampak.length > 5) points += 30;
+                if (item.penolakan && item.penolakan.length > 5) points += 30;
+                if (item.target && item.target.length > 5) points += 20;
+                if (item.ekskul || item.support_system) points += 20;
+                
+                const timestamp = item.device_timestamp || new Date(item.submitted_at || 0).getTime() || 0;
+                const enriched = { ...item, _calcScore: points, _calcTime: timestamp, _rawName: rawName };
+
+                if (!map.has(normName)) {
+                    map.set(normName, enriched);
+                } else {
+                    const existing = map.get(normName);
+                    if (points > existing._calcScore || (points === existing._calcScore && timestamp > existing._calcTime)) {
+                        map.set(normName, enriched);
+                    }
+                }
+            });
+            return Array.from(map.values());
+        }
+
+        window.renderAdminTable = function() {
+            const tbody = document.getElementById('admin-table-body');
+            if (!tbody) return;
+
+            const cleanSubmissions = getDeduplicatedSubmissions();
+
+            const selectKelompok = document.getElementById('admin-filter-kelompok');
+            if (selectKelompok && selectKelompok.options.length <= 1 && cleanSubmissions.length > 0) {
+                const currentSel = selectKelompok.value;
+                const groupsSet = new Set();
+                cleanSubmissions.forEach(item => {
+                    if (item && item.kelompok) groupsSet.add(item.kelompok.trim());
+                });
+                selectKelompok.innerHTML = '<option value="ALL">-- Semua Kelompok / Kelas --</option>';
+                Array.from(groupsSet).sort().forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g;
+                    opt.text = g;
+                    if (g === currentSel) opt.selected = true;
+                    selectKelompok.appendChild(opt);
+                });
+            }
+
+            let filtered = cleanSubmissions.filter(item => {
+                const matchName = !activeAdminSearchText || 
+                    (item.nama && item.nama.toLowerCase().includes(activeAdminSearchText)) ||
+                    (item.kelompok && item.kelompok.toLowerCase().includes(activeAdminSearchText));
+                const matchGroup = activeAdminFilterKelompok === 'ALL' || (item.kelompok && item.kelompok.trim() === activeAdminFilterKelompok);
+                return matchName && matchGroup;
+            });
+
+            filtered.sort((a, b) => {
+                const timeA = a._calcTime || 0;
+                const timeB = b._calcTime || 0;
+                return timeB - timeA;
+            });
+
+            const totalEl = document.getElementById('stat-total-siswa');
+            if (totalEl) totalEl.innerText = cleanSubmissions.length;
+            
+            const uniqueGroups = new Set(cleanSubmissions.map(s => s.kelompok).filter(k => k));
+            const kelEl = document.getElementById('stat-total-kelompok');
+            if (kelEl) kelEl.innerText = uniqueGroups.size;
+
+            let latestStudent = '-';
+            if (cleanSubmissions.length > 0) {
+                const latestObj = [...cleanSubmissions].sort((a, b) => (b._calcTime || 0) - (a._calcTime || 0))[0];
+                latestStudent = latestObj?._rawName ? `${latestObj._rawName.split(' ')[0]} (${latestObj.kelompok || ''})` : '-';
+            }
+            const latestEl = document.getElementById('stat-latest-siswa');
+            if (latestEl) latestEl.innerText = latestStudent;
+
+            let totalScore = 0;
+            cleanSubmissions.forEach(s => {
+                totalScore += (s._calcScore || 0);
+            });
+            const avg = cleanSubmissions.length > 0 ? Math.round(totalScore / cleanSubmissions.length) : 0;
+            const avgEl = document.getElementById('stat-avg-skor');
+            if (avgEl) avgEl.innerText = `${avg} / 100`;
+
+            tbody.innerHTML = '';
+            if (!filtered || filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 font-medium"> Belum ada data siswa yang pas dengan filter, atau Firebase kosong.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((student, index) => {
+                const dateStr = student.submitted_at ? new Date(student.submitted_at).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Baru saja';
+                const shortReflect = (student.target || student.dampak || 'Belum mengisi refleksi rinci').substring(0, 45) + '...';
+                
+                const points = student._calcScore || 0;
+                const badgeColor = points >= 80 ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-400';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3.5 text-center font-bold text-slate-400">${index + 1}</td>
+                    <td class="p-3.5 font-bold text-slate-900 dark:text-white">${student._rawName || 'Tanpa Nama'}</td>
+                    <td class="p-3.5 font-semibold text-blue-600 dark:text-blue-400">${student.kelompok || '-'}</td>
+                    <td class="p-3.5">${student.jenis_kelamin || '-'}</td>
+                    <td class="p-3.5 text-center">
+                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${badgeColor}">${points} / 100</span>
+                    </td>
+                    <td class="p-3.5 text-slate-500 italic max-w-xs truncate" title="${student.target || ''}">"${shortReflect}"</td>
+                    <td class="p-3.5 text-[11px] text-slate-400 font-mono">${dateStr}</td>
+                    <td class="p-3.5 text-center">
+                        <div class="inline-flex gap-1.5">
+                            <button onclick="openDetailModal('${student.key || sanitizeFirebaseKey(student.nama)}')" class="px-2.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-950/80 dark:text-blue-400 dark:hover:bg-blue-600 rounded-lg font-bold text-[11px] border border-blue-200 dark:border-blue-800 transition-all">
+                                👁️ Lihat
+                            </button>
+                            <button onclick="deleteSubmission('${student.key || sanitizeFirebaseKey(student.nama)}', '${student.nama || ''}')" title="Hapus submission" class="px-2 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white dark:bg-rose-950/80 dark:text-rose-400 dark:hover:bg-rose-600 rounded-lg font-bold text-[11px] border border-rose-200 dark:border-rose-800 transition-all">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        window.openDetailModal = function(key) {
+            const student = firebaseSubmissions.find(s => s.key === key || sanitizeFirebaseKey(s.nama) === key);
+            if (!student) return showToast('Data siswa tidak ditemukan di memori saat ini.', 'error');
+
+            const content = document.getElementById('content-detail-murid');
+            if (!content) return;
+            const dateStr = student.submitted_at ? new Date(student.submitted_at).toLocaleString('id-ID') : '-';
+            
+            content.innerHTML = `
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 space-y-2">
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div><span class="text-slate-400 block text-[10px] uppercase">Nama Murid:</span> <strong class="text-slate-900 dark:text-white text-sm">${student.nama || '-'}</strong></div>
+                        <div><span class="text-slate-400 block text-[10px] uppercase">Kelompok:</span> <strong class="text-blue-600 dark:text-blue-400 text-sm">${student.kelompok || '-'}</strong></div>
+                        <div><span class="text-slate-400 block text-[10px] uppercase">Jenis Kelamin:</span> <strong class="text-slate-700 dark:text-slate-300">${student.jenis_kelamin || '-'}</strong></div>
+                        <div><span class="text-slate-400 block text-[10px] uppercase">Waktu Kirim:</span> <strong class="text-slate-700 dark:text-slate-300">${dateStr}</strong></div>
+                    </div>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <h5 class="font-bold text-xs text-amber-600 dark:text-amber-400 border-b border-slate-100 dark:border-slate-750 pb-1">🧠 Hasil Analisis Kasus & Penolakan</h5>
+                    <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200/60 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 mb-1">1. Dampak Medis & Yuridis yang Disadari:</p>
+                        <p class="text-xs leading-relaxed text-slate-800 dark:text-slate-200 font-medium">${student.dampak || '<em>Belum diisi</em>'}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200/60 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 mb-1">2. Kalimat Asertif Menolak Napza:</p>
+                        <p class="text-xs leading-relaxed text-slate-800 dark:text-slate-200 font-medium">${student.penolakan || '<em>Belum diisi</em>'}</p>
+                    </div>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <h5 class="font-bold text-xs text-emerald-600 dark:text-emerald-400 border-b border-slate-100 dark:border-slate-750 pb-1">💎 Komitmen & Rencana Nyata</h5>
+                    <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200/60 dark:border-slate-800 space-y-2.5">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400">Target Pengembangan Diri:</p>
+                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium">${student.target || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400">Support System (Pendukung):</p>
+                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium">${student.support_system || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400">Pilihan Ekskul / Kegiatan Positif:</p>
+                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium">${student.ekskul || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400">Kesediaan Konsultasi Guru BK / Wali Kelas:</p>
+                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium">${student.konsultasi || '-'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400">Tanggal Tanda Tangan Komitmen:</p>
+                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium">${student.tanggal || '-'}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const modalDetail = document.getElementById('modal-detail-murid');
+            if (modalDetail) modalDetail.classList.remove('hidden');
+        };
+
+        window.closeDetailModal = function() {
+            const modalDetail = document.getElementById('modal-detail-murid');
+            if (modalDetail) modalDetail.classList.add('hidden');
+        };
+
+        window.deleteSubmission = function(key, nama) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus data rekap untuk murid: "${nama}"?\nData yang dihapus dari Firebase tidak dapat dikembalikan.`)) return;
+            if (!dbRef) return showToast('Koneksi Firebase tidak tersedia untuk menghapus data.', 'error');
+            dbRef.child(key).remove()
+                .then(() => {
+                    showToast('🗑️ Data siswa "' + nama + '" berhasil dihapus dari Firebase!', 'success');
+                })
+                .catch(err => {
+                    console.error('Gagal hapus:', err);
+                    showToast('Gagal menghapus data: ' + err.message, 'error');
+                });
+        };
+
+        window.exportRekapToExcel = function() {
+            const cleanData = getDeduplicatedSubmissions();
+            if (!cleanData || cleanData.length === 0) {
+                return showToast('Belum ada data rekap di Firebase untuk diunduh!', 'error');
+            }
+
+            showToast('⏳ Sedang merapikan kolom & menyusun file Excel (.xlsx) bebas ganda...', 'success', 2500);
+
+            // Urutkan data berdasarkan Kelompok/Kelas lalu Abjad Nama agar sangat rapi
+            cleanData.sort((a, b) => {
+                const groupA = (a.kelompok || '').toLowerCase();
+                const groupB = (b.kelompok || '').toLowerCase();
+                if (groupA < groupB) return -1;
+                if (groupA > groupB) return 1;
+                return (a._rawName || a.nama || '').localeCompare(b._rawName || b.nama || '', 'id-ID');
+            });
+
+            const excelRows = [
+                ["REKAPITULASI HASIL PORTOFOLIO & ASESMEN P4GN - MPLS SMAN 2 CIAMIS"],
+                ["Program Sekolah Bersinar (Bersih Narkoba) 2026"],
+                [`Waktu Unduhan: ${new Date().toLocaleString('id-ID')} | Total Siswa Terverifikasi: ${cleanData.length} Murid (Otomatis Bebas Ganda)`],
+                [""], // Baris kosong pemisah
+                [
+                    'No',
+                    'Nama Lengkap Murid',
+                    'Kelompok / Kelas',
+                    'Jenis Kelamin',
+                    'Skor Asesmen (0-100)',
+                    'Analisis Dampak Medis & Yuridis',
+                    'Kalimat Penolakan Asertif',
+                    'Target Pengembangan Diri',
+                    'Support System (Pendukung)',
+                    'Ekstrakurikuler Pilihan',
+                    'Kesediaan Konsultasi Guru BK',
+                    'Tanggal Komitmen',
+                    'Waktu Submit Realtime',
+                    'Durasi Akses Modul'
+                ]
+            ];
+
+            cleanData.forEach((s, idx) => {
+                const dateStr = s.submitted_at ? new Date(s.submitted_at).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                excelRows.push([
+                    idx + 1,
+                    s._rawName || s.nama || 'Tanpa Nama',
+                    s.kelompok || '-',
+                    s.jenis_kelamin || '-',
+                    s._calcScore || 0,
+                    s.dampak || '-',
+                    s.penolakan || '-',
+                    s.target || '-',
+                    s.support_system || '-',
+                    s.ekskul || '-',
+                    s.konsultasi || '-',
+                    s.tanggal || '-',
+                    dateStr,
+                    s.screentime || '-'
+                ]);
+            });
+
+            if (typeof XLSX !== 'undefined') {
+                const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
+
+                // Pengaturan Lebar Kolom Otomatis (Auto Column Widths) agar tulisan rapi & tidak tertutup
+                const colWidths = [
+                    { wch: 5 },  // No
+                    { wch: 28 }, // Nama Lengkap
+                    { wch: 18 }, // Kelompok
+                    { wch: 15 }, // JK
+                    { wch: 16 }, // Skor Asesmen
+                    { wch: 45 }, // Analisis Dampak
+                    { wch: 45 }, // Kalimat Penolakan
+                    { wch: 38 }, // Target Pengembangan
+                    { wch: 32 }, // Support System
+                    { wch: 28 }, // Ekstrakurikuler
+                    { wch: 25 }, // Konsultasi BK
+                    { wch: 16 }, // Tanggal Komitmen
+                    { wch: 22 }, // Waktu Submit
+                    { wch: 18 }  // Durasi Akses
+                ];
+                worksheet['!cols'] = colWidths;
+
+                worksheet['!merges'] = [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 13 } },
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 13 } },
+                    { s: { r: 2, c: 0 }, e: { r: 2, c: 13 } }
+                ];
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Portofolio P4GN");
+
+                const fileName = `Rekap_MPLS_P4GN_Rapi_BebasGanda_${new Date().toISOString().slice(0,10)}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+                showToast('🎯 Berhasil mengunduh Excel (.xlsx) rapi & tersusun sempurna!', 'success', 4000);
+            } else {
+                let csvContent = "\\uFEFF" + excelRows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join("\\r\\n");
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                const fileName = `Rekap_MPLS_P4GN_BebasGanda_${new Date().toISOString().slice(0,10)}.csv`;
+                link.setAttribute("download", fileName);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('📥 Berhasil mengunduh file rekap bebas data ganda!', 'success', 4000);
+            }
+        };
+        window.exportRekapToCSV = window.exportRekapToExcel;
 
         // inisialisasi data dan slide
         fetchSheetData();
