@@ -1434,7 +1434,8 @@
                         onchange="this.value = formatImageUrl(this.value)"
                         class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none">
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">💡 Link publik Google Drive (contoh:
-                        <code>/view?usp=sharing</code>) akan otomatis diubah menjadi gambar thumbnail langsung.</p>
+                        <code>/view?usp=sharing</code>) akan otomatis diubah menjadi gambar thumbnail langsung.
+                    </p>
                 </div>
                 <div>
                     <label class="block font-semibold mb-1.5">Tautan Materi (URL Link e-Modul)</label>
@@ -2497,7 +2498,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-between group hover:border-blue-500 transition-all duration-300 relative">
                         ${adminControls}
                         <div class="h-32 w-full overflow-hidden relative bg-slate-100">
-                            <img src="${displayImg}" alt="" onerror="handleImageError(this)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="${displayImg}" alt="" referrerpolicy="no-referrer" onerror="handleImageError(this)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             ${durationBadge}
                         </div>
                         <div class="p-4 flex-grow">
@@ -2624,16 +2625,26 @@
 
         window.handleImageError = function (img) {
             if (!img) return;
-            if (!img.dataset.fallbackState) {
-                img.dataset.fallbackState = '1';
-                const currentSrc = img.src || '';
-                const driveRegex = /(?:lh3\.googleusercontent\.com\/d\/|drive\.google\.com\/.*[?&]id=)([a-zA-Z0-9_-]+)/i;
-                const match = currentSrc.match(driveRegex);
-                if (match && match[1]) {
-                    img.src = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+            img.setAttribute('referrerpolicy', 'no-referrer');
+            const step = parseInt(img.dataset.fallbackStep || '0');
+            const currentSrc = img.src || '';
+            const driveRegex = /(?:lh3\.googleusercontent\.com\/d\/|drive\.google\.com\/.*[?&]id=|images\.weserv\.nl\/.*id=)([a-zA-Z0-9_-]+)/i;
+            const match = currentSrc.match(driveRegex);
+            const fileId = match ? match[1] : null;
+
+            if (fileId) {
+                if (step === 0) {
+                    img.dataset.fallbackStep = '1';
+                    img.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+                    return;
+                } else if (step === 1) {
+                    img.dataset.fallbackStep = '2';
+                    img.src = `https://images.weserv.nl/?url=drive.google.com/uc?id=${fileId}`;
                     return;
                 }
             }
+
+            img.dataset.fallbackStep = '3';
             img.src = 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400';
         };
 
